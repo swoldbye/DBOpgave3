@@ -1,4 +1,4 @@
 package DAO;
 
-public interface IngridientDAO {
+public class IngridientDAO {
 }
