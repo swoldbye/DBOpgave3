@@ -69,4 +69,16 @@ public class CommodityDTO implements Serializable, ICommodityDTO {
     public void setIngredient_name(String ingredient_name) {
         this.ingredient_name = ingredient_name;
     }
+
+    @Override
+    public String toString() {
+        return "CommodityDTO{" +
+                "batch_id=" + batch_id +
+                ", ingrdient_id=" + ingrdient_id +
+                ", quantity=" + quantity +
+                ", is_leftover=" + is_leftover +
+                ", manufacture=" + manufacture +
+                ", ingredient_name='" + ingredient_name + '\'' +
+                '}';
+    }
 }

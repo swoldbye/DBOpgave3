@@ -8,7 +8,7 @@ public interface ICommodityDAO {
 
     void createCommodity(ICommodityDTO commodity) throws DALException;
 
-    ICommodityDTO getCommmodity(int batch_id) throws DALException;
+    ICommodityDTO getCommmodity(int ingredient_id) throws DALException;
 
     List<ICommodityDTO> getCommodityList() throws DALException;
 
