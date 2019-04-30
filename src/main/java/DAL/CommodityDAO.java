@@ -32,7 +32,8 @@ public class CommodityDAO implements ICommodityDAO {
 
         }
         catch (SQLException e){
-           throw new DALException(e.getMessage());
+           //throw new DALException(e.getMessage());
+            System.out.println(e);
         }
     }
 
@@ -75,7 +76,8 @@ public class CommodityDAO implements ICommodityDAO {
             }
         }
         catch (SQLException e){
-                throw new DALException(e.getMessage());
+            //throw new DALException(e.getMessage());
+            System.out.println(e);
         }
         return null;
     }
@@ -119,8 +121,10 @@ public class CommodityDAO implements ICommodityDAO {
             return commodities;
         }
         catch (SQLException e){
-            throw new DALException(e.getMessage());
+            //throw new DALException(e.getMessage());
+            System.out.println(e);
         }
+        return null;
     }
 
     /**
@@ -143,7 +147,8 @@ public class CommodityDAO implements ICommodityDAO {
 
         }
         catch (SQLException e) {
-            throw new DALException(e.getMessage());
+            //throw new DALException(e.getMessage());
+            System.out.println(e);
         }
     }
 
@@ -166,9 +171,33 @@ public class CommodityDAO implements ICommodityDAO {
 
         }
         catch (SQLException e){
-            throw new DALException(e.getMessage());
+            System.out.println(e);
         }
 
     }
 
+
+
+}
+class test{
+    public static void main(String[] args) {
+
+        ICommodityDAO comDAO = new CommodityDAO();
+
+        CommodityDTO com = new CommodityDTO();
+        com.setBatch_id(11);
+        com.setIs_leftover(true);
+        com.setQuantity(6);
+        com.setManufacture(true);
+        try {
+            comDAO.createCommodity(com);
+        }
+        catch (Exception e){
+            System.out.println(e);
+        }
+
+
+
+
+    }
 }

@@ -11,6 +11,17 @@ public class CommodityDTO implements Serializable, ICommodityDTO {
     boolean manufacture;
     String ingredient_name;
 
+    public CommodityDTO(){}
+
+    public CommodityDTO(int batch_id, int ingrdient_id, int quantity, boolean is_leftover, boolean manufacture, String ingredient_name) {
+        this.batch_id = batch_id;
+        this.ingrdient_id = ingrdient_id;
+        this.quantity = quantity;
+        this.is_leftover = is_leftover;
+        this.manufacture = manufacture;
+        this.ingredient_name = ingredient_name;
+    }
+
     public int getBatch_id() {
         return batch_id;
     }
