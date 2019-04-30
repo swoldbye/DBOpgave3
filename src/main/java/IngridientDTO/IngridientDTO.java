@@ -6,11 +6,11 @@ public class IngridientDTO implements IIngridientDTO {
     private String ingredient_name;
     private boolean needs_refill;
 
-    public IngridientDTO(int id, String name, boolean gotIt ){
+    public IngridientDTO(int id, String name, boolean refill ){
 
         ingredient_id = id;
         ingredient_name = name;
-        needs_refill = gotIt;
+        needs_refill = refill;
 
     }
 
@@ -31,7 +31,7 @@ public class IngridientDTO implements IIngridientDTO {
         this.ingredient_name = ingredient_name;
     }
 
-    public boolean isNeeds_refill() {
+    public boolean getNeeds_refill() {
         return needs_refill;
     }
 

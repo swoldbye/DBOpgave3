@@ -10,7 +10,7 @@ public interface IIngridientDTO {
 
     void setIngredient_name(String ingredient_name);
 
-    boolean isNeeds_refill();
+    boolean getNeeds_refill();
 
     void setNeeds_refill(boolean needs_refill);
 

@@ -12,7 +12,7 @@ public interface IIngridientDAO {
 
     void updateRefill(int ingridient_id);
 
-    IIngridientDTO getIngridient(int ingridient_Id);
+
 
 
 }
