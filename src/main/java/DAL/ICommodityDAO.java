@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface ICommodityDAO {
 
-    void createCommodity() throws DALException;
+    void createCommodity(ICommodityDTO commodity) throws DALException;
 
     ICommodityDTO getCommmodity(int batch_id);
 

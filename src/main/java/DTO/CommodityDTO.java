@@ -1,0 +1,52 @@
+package DTO;
+
+import java.io.Serializable;
+
+public class CommodityDTO implements Serializable, ICommodityDTO {
+
+    int batch_id;
+    int ingrdient_id;
+    int quantity;
+    boolean is_leftover;
+    boolean manufacture;
+
+    public int getBatch_id() {
+        return batch_id;
+    }
+
+    public void setBatch_id(int batch_id) {
+        this.batch_id = batch_id;
+    }
+
+    public int getIngrdient_id() {
+        return ingrdient_id;
+    }
+
+    public void setIngrdient_id(int ingrdient_id) {
+        this.ingrdient_id = ingrdient_id;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
+    public boolean isIs_leftover() {
+        return is_leftover;
+    }
+
+    public void setIs_leftover(boolean is_leftover) {
+        this.is_leftover = is_leftover;
+    }
+
+    public boolean isManufacture() {
+        return manufacture;
+    }
+
+    public void setManufacture(boolean manufacture) {
+        this.manufacture = manufacture;
+    }
+}
