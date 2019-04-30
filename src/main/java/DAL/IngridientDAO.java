@@ -1,4 +1,4 @@
-package DAO;
+package DAL;
 
 public interface IngridientDAO {
 }
