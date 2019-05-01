@@ -32,8 +32,8 @@ public class CommodityDAO implements ICommodityDAO {
 
         }
         catch (SQLException e){
-           //throw new DALException(e.getMessage());
-            System.out.println(e);
+           throw new DALException(e.getMessage());
+           //System.out.println(e);
         }
     }
 
@@ -53,12 +53,6 @@ public class CommodityDAO implements ICommodityDAO {
 
             String query = "SELECT commodity.*,ingredient_name FROM commodity JOIN ingredient ON commodity.ingredient_id = ingredient.ingredient_id WHERE ingredient.ingredient_id = ?";
             PreparedStatement preparedStatement = connection.prepareStatement(query);
-//            preparedStatement.setInt(1,commodity.getBatch_id());
-//            preparedStatement.setInt(2,commodity.getIngrdient_id());
-//            preparedStatement.setString(3,commodity.getIngredient_name());
-//            preparedStatement.setInt(4,commodity.getQuantity());
-//            preparedStatement.setBoolean(5,commodity.isIs_leftover());
-//            preparedStatement.setBoolean(6,commodity.isManufacture());
             preparedStatement.setInt(1,ingredient_id);
             ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -74,8 +68,8 @@ public class CommodityDAO implements ICommodityDAO {
             }
         }
         catch (SQLException e){
-            //throw new DALException(e.getMessage());
-            System.out.println(e);
+            throw new DALException(e.getMessage());
+            //System.out.println(e);
         }
         return null;
     }
@@ -89,40 +83,32 @@ public class CommodityDAO implements ICommodityDAO {
     public List<ICommodityDTO> getCommodityList() throws DALException{
 
         List<ICommodityDTO> commodities = new ArrayList<>();
-        ICommodityDTO commodity = new CommodityDTO();
 
         try(Connection connection = dbConnection.createConnection()) {
 
             // SELECT batch_id, commodity.ingredient_id, ingredient_name, quantity, is_leftover, manufacture FROM commodity LEFT JOIN ingredient ON commodity.ingredient_id
 
-            String query = "SELECT ?, ?, ?, ?, ?, ? FROM commodity LEFT JOIN ingredient ON ?";
+            String query = "SELECT commodity.*,ingredient_name FROM commodity JOIN ingredient ON commodity.ingredient_id = ingredient.ingredient_id";
             PreparedStatement preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setInt(1,commodity.getBatch_id());
-            preparedStatement.setInt(2,commodity.getIngrdient_id());
-            preparedStatement.setString(3,commodity.getIngredient_name());
-            preparedStatement.setInt(4,commodity.getQuantity());
-            preparedStatement.setBoolean(5,commodity.isIs_leftover());
-            preparedStatement.setBoolean(6,commodity.isManufacture());
-            preparedStatement.setInt(7,commodity.getIngrdient_id());
             ResultSet resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()){
                 ICommodityDTO commodity1 = new CommodityDTO();
                 commodity1.setBatch_id(resultSet.getInt(1));
                 commodity1.setIngrdient_id(resultSet.getInt(2));
-                commodity1.setIngredient_name(resultSet.getString(3));
-                commodity1.setQuantity(resultSet.getInt(4));
-                commodity1.setIs_leftover(resultSet.getBoolean(5));
-                commodity1.setManufacture(resultSet.getBoolean(6));
+                commodity1.setQuantity(resultSet.getInt(3));
+                commodity1.setIs_leftover(resultSet.getBoolean(4));
+                commodity1.setManufacture(resultSet.getBoolean(5));
+                commodity1.setIngredient_name(resultSet.getString(6));
                 commodities.add(commodity1);
             }
             return commodities;
         }
         catch (SQLException e){
-            //throw new DALException(e.getMessage());
-            System.out.println(e);
+            throw new DALException(e.getMessage());
+            //System.out.println(e);
         }
-        return null;
+        //return null;
     }
 
     /**
@@ -145,8 +131,8 @@ public class CommodityDAO implements ICommodityDAO {
 
         }
         catch (SQLException e) {
-            //throw new DALException(e.getMessage());
-            System.out.println(e);
+            throw new DALException(e.getMessage());
+            //System.out.println(e);
         }
     }
 
@@ -158,13 +144,11 @@ public class CommodityDAO implements ICommodityDAO {
      */
     public void deleteCommodity(int batch_id) throws DALException{
 
-        ICommodityDTO commodity = new CommodityDTO();
-
         try(Connection connection = dbConnection.createConnection()){
 
             String query = "DELETE FROM commodity WHERE batch_id = ?";
             PreparedStatement preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setInt(1,commodity.getBatch_id());
+            preparedStatement.setInt(1,batch_id);
             preparedStatement.executeUpdate();
 
         }
@@ -177,33 +161,44 @@ public class CommodityDAO implements ICommodityDAO {
 
 
 }
-class test{
-    public static void main(String[] args) {
-
-        ICommodityDAO comDAO = new CommodityDAO();
-
-        ICommodityDTO com = new CommodityDTO();
-//        com.setBatch_id(12);
-//        com.setIngrdient_id(12);
-//        com.setIs_leftover(false);
-//        com.setQuantity(8);
-//        com.setManufacture(false);
-
-        try {
-            //comDAO.createCommodity(com);
-            com = comDAO.getCommmodity(12);
-            System.out.println(com);
-            com = comDAO.getCommmodity(1);
-            System.out.println(com);
-            com = comDAO.getCommmodity(2);
-            System.out.println(com);
-        }
-        catch (Exception e){
-            System.out.println(e);
-        }
-
-
-
-
-    }
-}
+//class test{
+//    public static void main(String[] args) {
+//
+//        ICommodityDAO comDAO = new CommodityDAO();
+//
+//        List<ICommodityDTO> list = new ArrayList<>();
+//
+//        ICommodityDTO com = new CommodityDTO();
+////        com.setBatch_id(12);
+////        com.setIngrdient_id(12);
+////        com.setIs_leftover(false);
+////        com.setQuantity(8);
+////        com.setManufacture(false);
+//
+//        try {
+//            //comDAO.createCommodity(com);
+////            com = comDAO.getCommmodity(12);
+////            System.out.println(com);
+////            com = comDAO.getCommmodity(1);
+////            System.out.println(com);
+////            com = comDAO.getCommmodity(2);
+////            System.out.println(com);
+//
+////            list = comDAO.getCommodityList();
+////            for(int i=0;i<list.size();i++){
+////                System.out.println(list.get(i));
+////            }
+//
+//            comDAO.deleteCommodity(12);
+//
+//
+//        }
+//        catch (Exception e){
+//            System.out.println(e);
+//        }
+//
+//
+//
+//
+//    }
+//}
