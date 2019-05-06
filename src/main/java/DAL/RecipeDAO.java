@@ -22,6 +22,7 @@ public class RecipeDAO implements IRecipeDAO {
             statement.setString(2, recipe.getName());
             statement.setInt(3, 1);
             statement.setDate(4, recipe.getRegistrationDate());
+            statement.setInt(5,recipe.getStorageTime());
 
             statement.execute();
 

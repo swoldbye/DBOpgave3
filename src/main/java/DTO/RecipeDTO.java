@@ -9,6 +9,13 @@ public class RecipeDTO {
     private Date registrationDate;
     private int storageTime;
 
+    public RecipeDTO( int id, String name, Date registrationDate, int storageTime){
+        this.id = id;
+        this.name = name;
+        this.registrationDate = registrationDate;
+        this.storageTime = storageTime;
+    }
+
     public int getId() {
         return id;
     }
