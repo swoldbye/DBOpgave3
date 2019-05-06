@@ -8,15 +8,18 @@ public class CommodityDTO implements Serializable, ICommodityDTO {
     private int ingrdient_id;
     private int quantity;
     private boolean is_leftover;
+    private String commodity_manufacturer;
     private String ingredient_name;
 
     public CommodityDTO(){}
 
-    public CommodityDTO(int batch_id, int ingrdient_id, int quantity, boolean is_leftover,  String ingredient_name) {
+    public CommodityDTO(int batch_id, int ingrdient_id, int quantity, boolean is_leftover,
+                        String commodity_manufacturer, String ingredient_name) {
         this.batch_id = batch_id;
         this.ingrdient_id = ingrdient_id;
         this.quantity = quantity;
         this.is_leftover = is_leftover;
+        this.commodity_manufacturer = commodity_manufacturer;
         this.ingredient_name = ingredient_name;
     }
 
@@ -52,6 +55,14 @@ public class CommodityDTO implements Serializable, ICommodityDTO {
         this.is_leftover = is_leftover;
     }
 
+    public String getCommodity_manufacturer() {
+        return commodity_manufacturer;
+    }
+
+    public void setCommodity_manufacturer(String commodity_manufacturer) {
+        this.commodity_manufacturer = commodity_manufacturer;
+    }
+
     public String getIngredient_name() {
         return ingredient_name;
     }
@@ -67,6 +78,7 @@ public class CommodityDTO implements Serializable, ICommodityDTO {
                 ", ingrdient_id=" + ingrdient_id +
                 ", quantity=" + quantity +
                 ", is_leftover=" + is_leftover +
+                ", commodity_manufacturer='" + commodity_manufacturer + '\'' +
                 ", ingredient_name='" + ingredient_name + '\'' +
                 '}';
     }

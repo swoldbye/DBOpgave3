@@ -18,6 +18,10 @@ public interface ICommodityDTO {
 
     void setIs_leftover(boolean is_leftover);
 
+    String getCommodity_manufacturer();
+
+    void setCommodity_manufacturer(String commodity_manufacturer);
+
     String getIngredient_name();
 
     void setIngredient_name(String ingredient_name);
