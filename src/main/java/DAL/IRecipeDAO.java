@@ -10,7 +10,7 @@ public interface IRecipeDAO {
 
     void deleteRecipe(RecipeDTO recipe) throws DALException;
 
-    RecipeDTO getRecipe( int id ) throws DALException;
+    RecipeDTO getRecipe(int id) throws DALException;
 
     List<RecipeDTO> getAllRecipes() throws DALException;
 }
