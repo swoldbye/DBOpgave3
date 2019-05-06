@@ -1,5 +1,5 @@
 package DTO;
 
-public interface ICommodityDTO {
+public interface IUserDTO {
     int getID();
 }

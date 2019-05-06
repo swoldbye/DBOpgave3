@@ -2,21 +2,24 @@ package DTO;
 
 import java.sql.Date;
 import java.util.Calendar;
+import java.util.List;
 
-public class ProductDTO {
+public class ProductDTO implements IProductDTO {
     private int id, recipe, orderedBy, quantity;
-    private User[] workers;
+    private List<IUserDTO> workers;
+    private List<ICommodityDTO> commodities;
     private Date date;
 
-    ProductDTO(int id, int recipe, int orderedBy, int quantity, User[] workers, Date date) {   //Retrieve ProductDTO from
+    public ProductDTO(int id, int recipe, int orderedBy, int quantity, List<IUserDTO> workers, List<ICommodityDTO> commodities, Date date) {   //Retrieve ProductDTO from database
         this.id = id;
         this.recipe = recipe;
         this.orderedBy = orderedBy;
         this.quantity = quantity;
         this.workers = workers;
+        this.commodities = commodities;
         this.date = date;
     }
-    ProductDTO(int id, int recipe, int orderedBy, int quantity, User[] workers) {              //Create ProductDTO to insert into database with new date
+    public ProductDTO(int id, int recipe, int orderedBy, int quantity, List<IUserDTO> workers, List<ICommodityDTO> commodities) {              //Create ProductDTO to insert into database with current date
         this.id = id;
         this.recipe = recipe;
         this.orderedBy = orderedBy;
@@ -37,8 +40,11 @@ public class ProductDTO {
     public int getQuantity() {
         return quantity;
     }
-    public User[] getWorkersIDs() {
+    public List<IUserDTO> getWorkers() {
         return workers;
+    }
+    public List<ICommodityDTO> getCommodities() {
+        return commodities;
     }
     public Date getDate() {
         return date;
