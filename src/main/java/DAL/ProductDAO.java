@@ -125,18 +125,49 @@ public class ProductDAO implements IProductDAO {
     //Update
     @Override //TODO
     public void updateProductInfo(IProductDTO pro) throws DALException {
+        try(Connection con = db.createConnection()) {
+            String query = "UPDATE product SET ordered_by = ?, recipe_id = ?, quantity = ?, production_date = ? WHERE batch_id = ?"; //TODO Put "finished_production = ?," into query when db updated
+            PreparedStatement preStatement = con.prepareStatement(query);
 
+            preStatement.setInt(1, pro.getOrderedBy());
+            preStatement.setInt(2, pro.getRecipeID());
+            preStatement.setInt(3, pro.getQuantity());
+            preStatement.setDate(4, pro.getDate());
+            preStatement.execute();
+            //Update workers
+            updateProductWorkers(pro.getID(), con); //FixMe Needs to be completed
+        } catch(SQLException e) {
+            throw new DALException(e.getMessage());
+        }
     }
 
-    //MarkAsFinished
-    @Override //TODO
-    public void markAsFinished(int id) throws DALException {
-
+    private void updateProductWorkers(int id, Connection con) throws SQLException {
+        String query = "DELETE"; //TODO Help, not completely sure how to handle - is delete + insert safe enough?
     }
+
+//        //MarkAsFinished
+//    @Override //TODO not yet implemented in database
+//    public void markAsFinished(int id) throws DALException {
+//        try(Connection con = db.createConnection()) {
+//            String query = "UPDATE product SET finished_production = ? WHERE batch_id = ?";
+//            PreparedStatement preStatement = con.prepareStatement(query);
+//            preStatement.setBoolean(1, true);
+//            preStatement.setInt(2, id);
+//        } catch(SQLException e) {
+//            throw new DALException(e.getMessage());
+//        }
+//    }
 
     //Delete
-    @Override //TODO
+    @Override
     public void deleteProduct(int id) throws DALException {
-
+        try(Connection con = db.createConnection()) {
+            String query = "DELETE FROM product WHERE product_id = ?";
+            PreparedStatement preStatement = con.prepareStatement(query);
+            preStatement.setInt(1, id);
+            preStatement.execute();
+        } catch(SQLException e) {
+            throw new DALException(e.getMessage());
+        }
     }
 }

@@ -13,6 +13,6 @@ public interface IProductDAO {
     void createCommodityLines(IProductDTO pro, Connection con) throws SQLException;
     List<IProductDTO> readAllProducts() throws DALException;         //Returns list of all products
     void updateProductInfo(IProductDTO pro) throws DALException; //Update the information of a Product
-    void markAsFinished(int id) throws DALException;            //Mark production as finished
+//    void markAsFinished(int id) throws DALException;            //Mark production as finished //TODO implement in database
     void deleteProduct(int id) throws DALException;             //Delete
 }
