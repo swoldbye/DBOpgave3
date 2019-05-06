@@ -65,7 +65,7 @@ public class ProductDAO implements IProductDAO {
 
     //Read
     @Override
-    public List<IProductDTO> readAllProducts() throws DALException {
+    public List<IProductDTO> readAllProducts() throws DALException {    //TODO Split into readProducts methods for manufactured and not-yet-manufactured instances of product?
         List<IProductDTO> products = new ArrayList<>();
 
         try(Connection con = db.createConnection()) {
@@ -83,7 +83,8 @@ public class ProductDAO implements IProductDAO {
                         rsProducts.getInt(4),   //Quantity of product
                         users,                              //Laborants working on it
                         commodities,                        //Commodities used
-                        rsProducts.getDate(5)   //Date of production
+                        rsProducts.getDate(5),  //Date of production
+                        rsProducts.getBoolean(6)
                 );
                 products.add(product);
             }
@@ -155,7 +156,6 @@ public class ProductDAO implements IProductDAO {
             List<IUserDTO> newUsersTemp = newPro.getWorkers();
             newUsersTemp.removeAll(oldUsers);
             usersToBeInserted = newUsersTemp;
-
             oldUsers.removeAll(newPro.getWorkers());
             usersToBeDeleted = oldUsers;
 
@@ -186,18 +186,18 @@ public class ProductDAO implements IProductDAO {
         }
     }
 
-//        //MarkAsFinished
-//    @Override //TODO not yet implemented in database, method should work
-//    public void markAsFinished(int id) throws DALException {
-//        try(Connection con = db.createConnection()) {
-//            String query = "UPDATE product SET finished_production = ? WHERE batch_id = ?";
-//            PreparedStatement preStatement = con.prepareStatement(query);
-//            preStatement.setBoolean(1, true);
-//            preStatement.setInt(2, id);
-//        } catch(SQLException e) {
-//            throw new DALException(e.getMessage());
-//        }
-//    }
+        //MarkAsFinished
+    @Override //TODO not yet implemented in database, method should work
+    public void markAsFinished(int id) throws DALException {
+        try(Connection con = db.createConnection()) {
+            String query = "UPDATE product SET manufactured = ? WHERE batch_id = ?";
+            PreparedStatement preStatement = con.prepareStatement(query);
+            preStatement.setBoolean(1, true);
+            preStatement.setInt(2, id);
+        } catch(SQLException e) {
+            throw new DALException(e.getMessage());
+        }
+    }
 
     //Delete
     @Override

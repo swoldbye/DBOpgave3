@@ -9,8 +9,9 @@ public class ProductDTO implements IProductDTO {
     private List<IUserDTO> workers;
     private List<ICommodityDTO> commodities;
     private Date date;
+    private boolean manufactured;
 
-    public ProductDTO(int id, int recipe, int orderedBy, int quantity, List<IUserDTO> workers, List<ICommodityDTO> commodities, Date date) {   //Retrieve ProductDTO from database
+    public ProductDTO(int id, int recipe, int orderedBy, int quantity, List<IUserDTO> workers, List<ICommodityDTO> commodities, Date date, boolean manufactured) {   //Retrieve ProductDTO from database
         this.id = id;
         this.recipe = recipe;
         this.orderedBy = orderedBy;
@@ -18,6 +19,7 @@ public class ProductDTO implements IProductDTO {
         this.workers = workers;
         this.commodities = commodities;
         this.date = date;
+        this.manufactured = manufactured;
     }
     public ProductDTO(int id, int recipe, int orderedBy, int quantity, List<IUserDTO> workers, List<ICommodityDTO> commodities) {              //Create ProductDTO to insert into database with current date
         this.id = id;
