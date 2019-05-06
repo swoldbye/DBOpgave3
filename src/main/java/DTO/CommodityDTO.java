@@ -4,11 +4,11 @@ import java.io.Serializable;
 
 public class CommodityDTO implements Serializable, ICommodityDTO {
 
-    int batch_id;
-    int ingrdient_id;
-    int quantity;
-    boolean is_leftover;
-    String ingredient_name;
+    private int batch_id;
+    private int ingrdient_id;
+    private int quantity;
+    private boolean is_leftover;
+    private String ingredient_name;
 
     public CommodityDTO(){}
 
