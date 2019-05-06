@@ -24,6 +24,9 @@ public class ProductDAO implements IProductDAO {
 
             preStatement.execute();
 
+            if(!pro.getWorkers().isEmpty()) {
+                createProductionLines(pro, con);
+            }
             createCommodityLines(pro, con);
 
         } catch (SQLException e) {
@@ -31,9 +34,9 @@ public class ProductDAO implements IProductDAO {
         }
     }
 
-    @Override //FixMe Should be called outside createProduct, hence the opportunity to setup Products without workers?
-    public void createProductionLines(IProductDTO pro) throws DALException {
-        try(Connection con = db.createConnection()){
+    @Override
+    public void createProductionLines(IProductDTO pro, Connection con) throws DALException {
+        try {
             String query = "INSERT INTO production(?, ?)";
             PreparedStatement preStatement = con.prepareStatement(query);
 
@@ -123,8 +126,8 @@ public class ProductDAO implements IProductDAO {
     }
 
     //Update
-    @Override //TODO
-    public void updateProductInfo(IProductDTO pro) throws DALException {
+    @Override
+    public void updateProductInfo(IProductDTO pro, List<IUserDTO> oldUsers) throws DALException {
         try(Connection con = db.createConnection()) {
             String query = "UPDATE product SET ordered_by = ?, recipe_id = ?, quantity = ?, production_date = ? WHERE batch_id = ?"; //TODO Put "finished_production = ?," into query when db updated
             PreparedStatement preStatement = con.prepareStatement(query);
@@ -135,18 +138,56 @@ public class ProductDAO implements IProductDAO {
             preStatement.setDate(4, pro.getDate());
             preStatement.execute();
             //Update workers
-            updateProductWorkers(pro.getID(), con); //FixMe Needs to be completed
+            updateLaborants(pro, oldUsers, con);
         } catch(SQLException e) {
             throw new DALException(e.getMessage());
         }
     }
 
-    private void updateProductWorkers(int id, Connection con) throws SQLException {
-        String query = "DELETE"; //TODO Help, not completely sure how to handle - is delete + insert safe enough?
+    private void updateLaborants(IProductDTO newPro, List<IUserDTO> oldUsers, Connection con) throws SQLException {
+        PreparedStatement deleteStatement = null, insertStatement = null;
+        List<IUserDTO> usersToBeDeleted, usersToBeInserted;
+        try{
+            con.setAutoCommit(false);
+            deleteStatement = con.prepareStatement("DELETE * FROM production WHERE laborant_id = ? AND product_id = ?");
+            insertStatement = con.prepareStatement("INSERT INTO production VALUES (?,?)");
+
+            List<IUserDTO> newUsersTemp = newPro.getWorkers();
+            newUsersTemp.removeAll(oldUsers);
+            usersToBeInserted = newUsersTemp;
+
+            oldUsers.removeAll(newPro.getWorkers());
+            usersToBeDeleted = oldUsers;
+
+            updateProductionLines(deleteStatement, newPro.getID(), usersToBeDeleted, con);
+            updateProductionLines(insertStatement, newPro.getID(), usersToBeInserted, con);
+        } catch(SQLException e) {
+            if(con != null) {
+                con.rollback();
+            }
+            throw e;
+        } finally {
+            if(deleteStatement != null) {
+                deleteStatement.close(); //FixMe Should this be closed or deleted?
+            }
+            if(insertStatement != null) {
+                insertStatement.close(); //FixMe Should this be closed or deleted?
+            }
+            con.setAutoCommit(true);
+        }
+    }
+
+    private void updateProductionLines(PreparedStatement statement, int proID, List<IUserDTO> users, Connection con) throws SQLException {
+        for(IUserDTO user : users) {
+            statement.setInt(1, user.getID());
+            statement.setInt(2, proID);
+            statement.execute();
+            con.commit();
+        }
     }
 
 //        //MarkAsFinished
-//    @Override //TODO not yet implemented in database
+//    @Override //TODO not yet implemented in database, method should work
 //    public void markAsFinished(int id) throws DALException {
 //        try(Connection con = db.createConnection()) {
 //            String query = "UPDATE product SET finished_production = ? WHERE batch_id = ?";
