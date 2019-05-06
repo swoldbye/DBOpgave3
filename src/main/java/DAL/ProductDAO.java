@@ -1,39 +1,36 @@
-package DAO;
+package DAL;
 
-import model.ProductDTO;
+import DTO.ProductDTO;
 
 import java.sql.*;
 
 public class ProductDAO implements IProductDAO {
+    private DBConnection db = new DBConnection();
 
-    private final String dbURL = "jdbc:mysql://ec2-52-30-211-3.eu-west-1.compute.amazonaws.com/s180943?";
-    private final String dbName = "s180943";
-    private final String dbPass = "UXZTadQzbPrlIosGCZYNF";
-
-    private Connection getConnection() throws DALException {
-        try {
-            return DriverManager.getConnection(dbURL, dbName, dbPass);
-        } catch(SQLException e) {
-            throw new DALException(e.getMessage());
-        }
-    }
     //Create
-
     @Override
     public void createProduct(ProductDTO pro) throws DALException {
-        try(Connection con = getConnection()) {
+        try(Connection con = db.createConnection()) {
             String query = "INSERT INTO Product VALUES(?,?,?,?,?)";
-            PreparedStatement statement = con.prepareStatement(query);
+            PreparedStatement proStatement = con.prepareStatement(query);
 
-            //TODO Set into statement
-            statement.setInt(1, pro.getID());
+            proStatement.setInt(1, pro.getID());
+            proStatement.setInt(2, pro.getOrderedBy());
+            proStatement.setInt(3, pro.getRecipeID());
+            proStatement.setInt(4, pro.getQuantity());
+            proStatement.setDate(5, pro.getDate());
 
+            proStatement.execute();
 
-            statement.execute();
+            createProductionLines(pro.getWorkersIDs());
 
         } catch (SQLException e) {
             throw new DALException(e.getMessage());
         }
+    }
+
+    private void createProductionLines(User[] workers) {
+
     }
 
     //Read
