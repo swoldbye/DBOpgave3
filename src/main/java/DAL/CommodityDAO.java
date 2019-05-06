@@ -21,13 +21,12 @@ public class CommodityDAO implements ICommodityDAO {
 
         try(Connection connection = dbConnection.createConnection()) {
 
-            String query = "INSERT INTO commodity VALUES(?,?,?,?,?)";
+            String query = "INSERT INTO commodity VALUES(?,?,?,?)";
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setInt(1,commodity.getBatch_id());
             preparedStatement.setInt(2,commodity.getIngrdient_id());
             preparedStatement.setInt(3,commodity.getQuantity());
             preparedStatement.setBoolean(4,commodity.isIs_leftover());
-            preparedStatement.setBoolean(5,commodity.isManufacture());
             preparedStatement.executeUpdate();
 
         }
@@ -62,8 +61,7 @@ public class CommodityDAO implements ICommodityDAO {
                 commodity1.setIngrdient_id(resultSet.getInt(2));
                 commodity1.setQuantity(resultSet.getInt(3));
                 commodity1.setIs_leftover(resultSet.getBoolean(4));
-                commodity1.setManufacture(resultSet.getBoolean(5));
-                commodity1.setIngredient_name(resultSet.getString(6));
+                commodity1.setIngredient_name(resultSet.getString(5));
                 return commodity1;
             }
         }
@@ -98,8 +96,7 @@ public class CommodityDAO implements ICommodityDAO {
                 commodity1.setIngrdient_id(resultSet.getInt(2));
                 commodity1.setQuantity(resultSet.getInt(3));
                 commodity1.setIs_leftover(resultSet.getBoolean(4));
-                commodity1.setManufacture(resultSet.getBoolean(5));
-                commodity1.setIngredient_name(resultSet.getString(6));
+                commodity1.setIngredient_name(resultSet.getString(5));
                 commodities.add(commodity1);
             }
             return commodities;
@@ -121,12 +118,11 @@ public class CommodityDAO implements ICommodityDAO {
 
         try(Connection connection = dbConnection.createConnection()){
 
-            String query = "UPDATE commodity SET quantity = ?, is_leftover = ?, manufacture = ? WHERE batch_id = ?";
+            String query = "UPDATE commodity SET quantity = ?, is_leftover = ? WHERE batch_id = ?";
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setInt(1,commodity.getQuantity());
             preparedStatement.setBoolean(2,commodity.isIs_leftover());
-            preparedStatement.setBoolean(3,commodity.isManufacture());
-            preparedStatement.setInt(4,commodity.getBatch_id());
+            preparedStatement.setInt(3,commodity.getBatch_id());
             preparedStatement.executeUpdate();
 
         }
