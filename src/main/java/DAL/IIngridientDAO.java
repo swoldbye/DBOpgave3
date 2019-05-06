@@ -1,4 +1,4 @@
-package DAO;
+package DAL;
 
 import IngridientDTO.IIngridientDTO;
 
@@ -6,7 +6,7 @@ public interface IIngridientDAO {
 
     void createIngridient(IIngridientDTO ingridient);
 
-    void updateIngridient(int ingridient_id);
+    void updateIngridient(IIngridientDTO ingridient);
 
     void deleteIngridient(int ingridient_id);
 
