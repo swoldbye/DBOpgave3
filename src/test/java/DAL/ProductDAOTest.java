@@ -25,6 +25,9 @@ public class ProductDAOTest {
 
     @Test
     public void readAllProducts() {
+        //TODO Create proper UserDTO objects, when UserDTO is implemented
+        IUserDTO user1 = null;
+        IUserDTO user2 = null;
 
 //        Date pro1Date = new Date(2019, 5, 7);
 //        IProductDTO pro1 = new ProductDTO(1, "Sildenafil", 1, 2000, pro1Workers, pro1Commodities, pro1Date, true);
