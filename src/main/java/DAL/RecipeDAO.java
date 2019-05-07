@@ -110,12 +110,16 @@ public class RecipeDAO implements IRecipeDAO {
     public void updateRecipe(int oldRecipe_id, IRecipeDTO recipe) throws DALException {
 
         try(Connection connection = dbConnection.createConnection()){
+
             connection.setAutoCommit(false);
+
             String query = "DELETE FROM recipe WHERE recipe_id = ?";
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setInt(1,oldRecipe_id);
             preparedStatement.executeQuery();
+
             connection.commit();
+
             String query1 = "INSERT INTO recipe VALUES(recipe_id = ?, recipe_name = ?, reg_date = ?, storage_time = ?)";
             PreparedStatement preparedStatement1 = connection.prepareStatement(query1);
             preparedStatement1.setInt(1,recipe.getRecipe_id());
@@ -123,10 +127,8 @@ public class RecipeDAO implements IRecipeDAO {
             preparedStatement1.setDate(3,recipe.getRegistration_date());
             preparedStatement1.setInt(4,recipe.getStorage_time());
             preparedStatement1.executeQuery();
+
             connection.commit();
-
-
-
 
         }
         catch (SQLException e){
