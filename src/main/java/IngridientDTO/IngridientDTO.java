@@ -6,6 +6,12 @@ public class IngridientDTO implements IIngridientDTO {
     private String ingredient_name;
     private boolean needs_refill;
 
+
+
+    //Constructor for getting an ingredient from the DAL.
+
+    public IngridientDTO(){}
+
     public IngridientDTO(int id, String name, boolean refill ){
 
         ingredient_id = id;
