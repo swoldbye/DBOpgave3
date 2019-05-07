@@ -10,9 +10,9 @@ public interface ICommodityDTO {
 
     void setIngrdient_id(int ingrdient_id);
 
-    int getQuantity();
+    double getQuantity();
 
-    void setQuantity(int quantity);
+    void setQuantity(double quantity);
 
     boolean isIs_leftover();
 
@@ -25,5 +25,7 @@ public interface ICommodityDTO {
     String getIngredient_name();
 
     void setIngredient_name(String ingredient_name);
+
+    String toString();
 
 }

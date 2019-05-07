@@ -1,6 +1,7 @@
 import DAL.RecipeDAO;
+import DTO.IRecipeDTO;
 import DTO.RecipeDTO;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Date;
 
@@ -11,7 +12,7 @@ public class RecipeDAOTest {
     @Test
     public void createRecipe(){
 
-        RecipeDTO recipe = new RecipeDTO(1, "Panodil", new Date(2019,12,10), 10 );
+        IRecipeDTO recipe = new RecipeDTO();
         RecipeDAO dao = new RecipeDAO();
 
 
