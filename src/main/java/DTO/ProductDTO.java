@@ -6,12 +6,14 @@ import java.util.List;
 
 public class ProductDTO implements IProductDTO {
     private int id, recipe, orderedBy, quantity;
+    private String name;
     private List<IUserDTO> workers;
     private List<ICommodityDTO> commodities;
     private Date date;
     private boolean manufactured;
 
-    public ProductDTO(int id, int recipe, int orderedBy, int quantity, List<IUserDTO> workers, List<ICommodityDTO> commodities, Date date, boolean manufactured) {   //Retrieve ProductDTO from database
+    public ProductDTO(int id, String name, int recipe, int orderedBy, int quantity, List<IUserDTO> workers, List<ICommodityDTO> commodities, Date date, boolean manufactured) {   //Retrieve ProductDTO from database
+        this.name = name;
         this.id = id;
         this.recipe = recipe;
         this.orderedBy = orderedBy;
@@ -21,7 +23,8 @@ public class ProductDTO implements IProductDTO {
         this.date = date;
         this.manufactured = manufactured;
     }
-    public ProductDTO(int id, int recipe, int orderedBy, int quantity, List<IUserDTO> workers, List<ICommodityDTO> commodities) {              //Create ProductDTO to insert into database with current date
+    public ProductDTO(int id, String name, int recipe, int orderedBy, int quantity, List<IUserDTO> workers, List<ICommodityDTO> commodities) {              //Create ProductDTO to insert into database with current date
+        this.name = name;
         this.id = id;
         this.recipe = recipe;
         this.orderedBy = orderedBy;

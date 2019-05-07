@@ -77,14 +77,15 @@ public class ProductDAO implements IProductDAO {
                 List<ICommodityDTO> commodities = getProductCommodities(proID, con);
 
                 IProductDTO product = new ProductDTO(
-                        proID,                              //ID
-                        rsProducts.getInt(2),   //Recipe Number
-                        rsProducts.getInt(3),   //Orderers ID
-                        rsProducts.getInt(4),   //Quantity of product
-                        users,                              //Laborants working on it
-                        commodities,                        //Commodities used
-                        rsProducts.getDate(5),  //Date of production
-                        rsProducts.getBoolean(6)
+                        proID,                                  //ID
+                        rsProducts.getString(7),    //Name of product
+                        rsProducts.getInt(2),       //Recipe number
+                        rsProducts.getInt(3),       //Orderers ID
+                        rsProducts.getInt(4),       //Quantity of product
+                        users,                                  //Laborants working on it
+                        commodities,                            //Commodities used
+                        rsProducts.getDate(5),      //Date of production
+                        rsProducts.getBoolean(6)    //Manufactured
                 );
                 products.add(product);
             }
@@ -168,10 +169,10 @@ public class ProductDAO implements IProductDAO {
             throw e;
         } finally {
             if(deleteStatement != null) {
-                deleteStatement.close(); //FixMe Should this be closed or deleted?
+                deleteStatement.close(); //FixMe This is good practice, instead of waiting for garbage collector to come by
             }
             if(insertStatement != null) {
-                insertStatement.close(); //FixMe Should this be closed or deleted?
+                insertStatement.close(); //FixMe This is good practice, instead of waiting for garbage collector to come by
             }
             con.setAutoCommit(true);
         }
@@ -187,7 +188,7 @@ public class ProductDAO implements IProductDAO {
     }
 
         //MarkAsFinished
-    @Override //TODO not yet implemented in database, method should work
+    @Override //TODO Should set date to current date aswell
     public void markAsFinished(int id) throws DALException {
         try(Connection con = db.createConnection()) {
             String query = "UPDATE product SET manufactured = ? WHERE batch_id = ?";

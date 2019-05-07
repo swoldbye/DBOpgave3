@@ -1,6 +1,12 @@
 package DAL;
 
+import DTO.ICommodityDTO;
+import DTO.IProductDTO;
+import DTO.IUserDTO;
+import DTO.ProductDTO;
 import org.junit.Test;
+
+import java.sql.Date;
 
 public class ProductDAOTest {
 
@@ -19,6 +25,9 @@ public class ProductDAOTest {
 
     @Test
     public void readAllProducts() {
+
+//        Date pro1Date = new Date(2019, 5, 7);
+//        IProductDTO pro1 = new ProductDTO(1, "Sildenafil", 1, 2000, pro1Workers, pro1Commodities, pro1Date, true);
     }
 
     @Test
