@@ -9,7 +9,7 @@ public class RecipeDTO implements IRecipeDTO{
     private String recipe_name;
     private Date registration_date;
     private int storage_time;
-    private List<IIngridient_lineDTO> ingredient_line;
+    private List<IIngredient_lineDTO> ingredient_line;
 
     public RecipeDTO(){}
 
@@ -55,19 +55,19 @@ public class RecipeDTO implements IRecipeDTO{
         this.storage_time = storage_time;
     }
 
-    public List<IIngridient_lineDTO> getIngredient_line() {
+    public List<IIngredient_lineDTO> getIngredient_line() {
         return ingredient_line;
     }
 
-    public void setIngredient_line(List<IIngridient_lineDTO> ingredient_line) {
+    public void setIngredient_line(List<IIngredient_lineDTO> ingredient_line) {
         this.ingredient_line = ingredient_line;
     }
 
-    public void addIngredient_line(IIngridient_lineDTO line){
+    public void addIngredient_line(IIngredient_lineDTO line){
         this.ingredient_line.add(line);
     }
 
-    public boolean removeIngredient_line(IIngridient_lineDTO line){
+    public boolean removeIngredient_line(IIngredient_lineDTO line){
         return this.ingredient_line.remove(line);
     }
 

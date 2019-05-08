@@ -1,24 +1,24 @@
 package DTO;
 
-public class ingrdient_lineDTO implements IIngridient_lineDTO {
+public class Ingredient_lineDTO implements IIngredient_lineDTO {
 
     private int ingredient_id;
     private double quantity;
     private String Ingredient_name;
 
-    public ingrdient_lineDTO() {
+    public Ingredient_lineDTO() {
     }
 
-    public ingrdient_lineDTO(int ingredient_id, double quantity) {
+    public Ingredient_lineDTO(int ingredient_id, double quantity) {
         this.ingredient_id = ingredient_id;
         this.quantity = quantity;
     }
 
-    public ingrdient_lineDTO(double quantity, String name) {
+    public Ingredient_lineDTO(double quantity, String name) {
         this.quantity = quantity;
         this.Ingredient_name = name;
     }
-    public ingrdient_lineDTO(int ingredient_id, double quantity, String ingredient_name) {
+    public Ingredient_lineDTO(int ingredient_id, double quantity, String ingredient_name) {
         this.ingredient_id = ingredient_id;
         this.quantity = quantity;
         Ingredient_name = ingredient_name;

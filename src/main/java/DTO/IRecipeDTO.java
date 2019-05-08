@@ -21,11 +21,11 @@ public interface IRecipeDTO {
 
     void setStorage_time(int storage_time);
 
-    List<IIngridient_lineDTO> getIngredient_line();
+    List<IIngredient_lineDTO> getIngredient_line();
 
-    void setIngredient_line(List<IIngridient_lineDTO> ingredient_line);
+    void setIngredient_line(List<IIngredient_lineDTO> ingredient_line);
 
     String toString();
 
-    void addIngredient_line(IIngridient_lineDTO object);
+    void addIngredient_line(IIngredient_lineDTO object);
 }

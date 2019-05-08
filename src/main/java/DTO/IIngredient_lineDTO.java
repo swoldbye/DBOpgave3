@@ -1,6 +1,6 @@
 package DTO;
 
-public interface IIngridient_lineDTO {
+public interface IIngredient_lineDTO {
 
     int getIngredient_id();
 
