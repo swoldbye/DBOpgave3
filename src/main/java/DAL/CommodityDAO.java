@@ -24,7 +24,7 @@ public class CommodityDAO implements ICommodityDAO {
             String query = "INSERT INTO commodity VALUES(?,?,?,?,?)";
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setInt(1,commodity.getBatch_id());
-            preparedStatement.setInt(2,commodity.getIngrdient_id());
+            preparedStatement.setInt(2,commodity.getIngredient_id());
             preparedStatement.setDouble(3,commodity.getQuantity());
             preparedStatement.setBoolean(4,commodity.isIs_leftover());
             preparedStatement.setString(5,commodity.getCommodity_manufacturer());
@@ -57,7 +57,7 @@ public class CommodityDAO implements ICommodityDAO {
             while(resultSet.next()){
                 ICommodityDTO commodity = new CommodityDTO();
                 commodity.setBatch_id(resultSet.getInt(1));
-                commodity.setIngrdient_id(resultSet.getInt(2));
+                commodity.setIngredient_id(resultSet.getInt(2));
                 commodity.setQuantity(resultSet.getDouble(3));
                 commodity.setIs_leftover(resultSet.getBoolean(4));
                 commodity.setCommodity_manufacturer(resultSet.getString(5));
@@ -91,7 +91,7 @@ public class CommodityDAO implements ICommodityDAO {
             while (resultSet.next()){
                 ICommodityDTO commodity = new CommodityDTO();
                 commodity.setBatch_id(resultSet.getInt(1));
-                commodity.setIngrdient_id(resultSet.getInt(2));
+                commodity.setIngredient_id(resultSet.getInt(2));
                 commodity.setQuantity(resultSet.getDouble(3));
                 commodity.setIs_leftover(resultSet.getBoolean(4));
                 commodity.setCommodity_manufacturer(resultSet.getString(5));
