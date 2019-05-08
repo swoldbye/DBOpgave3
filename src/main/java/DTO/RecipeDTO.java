@@ -1,6 +1,7 @@
 package DTO;
 
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 
 public class RecipeDTO implements IRecipeDTO{
@@ -9,7 +10,7 @@ public class RecipeDTO implements IRecipeDTO{
     private String recipe_name;
     private Date registration_date;
     private int storage_time;
-    private List<IIngredient_lineDTO> ingredient_line;
+    private List<IIngredient_lineDTO> ingredient_line = new ArrayList<>();
 
     public RecipeDTO(){}
 
@@ -73,12 +74,21 @@ public class RecipeDTO implements IRecipeDTO{
 
     @Override
     public String toString() {
-        return "RecipeDTO{" +
+        StringBuilder str = new StringBuilder();
+        String mainData = "RecipeDTO{" +
                 "recipe_id=" + recipe_id +
                 ", recipe_name='" + recipe_name + '\'' +
                 ", registration_date=" + registration_date +
-                ", storage_time=" + storage_time +
-                ", ingredient_line=" + ingredient_line +
-                '}';
+                ", storage_time=" + storage_time +'}';
+
+        str.append(mainData);
+
+        str.append("Ingredience; ");
+
+                for(int i = 0; i<ingredient_line.size();i++){
+                    str.append(" "+ ingredient_line.get(1).toString());
+                }
+
+                return str.toString();
     }
 }

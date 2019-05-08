@@ -1,4 +1,4 @@
-
+/*
 import static org.junit.Assert.*;
 import DAL.CommodityDAO;
 import DAL.DALException;
@@ -57,4 +57,4 @@ public class CommodityDAOTest{
     }
 
 
-}
+}*/

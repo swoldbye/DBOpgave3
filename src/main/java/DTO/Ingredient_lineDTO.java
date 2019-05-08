@@ -48,4 +48,10 @@ public class Ingredient_lineDTO implements IIngredient_lineDTO {
         Ingredient_name = ingredient_name;
     }
 
+    public String toString(){
+        String str = "{Ingredient name: "+ getIngredient_name()+", Quantity: " +quantity+ "}";
+
+    return str;
+    }
+
 }

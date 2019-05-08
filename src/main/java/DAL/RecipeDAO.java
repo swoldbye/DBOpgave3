@@ -67,9 +67,10 @@ public class RecipeDAO implements IRecipeDAO {
             ResultSet resultSet = preparedStatement.executeQuery();
 
 
-
+            resultSet.next();
             IRecipeDTO recipeDTO = new RecipeDTO();
-            recipeDTO.setRecipe_id(resultSet.getInt(1));
+            int id = resultSet.getInt(1);
+            recipeDTO.setRecipe_id(id);
             recipeDTO.setRecipe_name(resultSet.getString(2));
             recipeDTO.setRegistration_date(resultSet.getDate(3));
             recipeDTO.setStorage_time(resultSet.getInt(4));
@@ -81,13 +82,13 @@ public class RecipeDAO implements IRecipeDAO {
                 IIngredient_lineDTO ingredientLine = new Ingredient_lineDTO(resultSet.getDouble(5),
                         resultSet.getString(6));
                 recipeDTO.addIngredient_line(ingredientLine);
-                return recipeDTO;
-            }
+
+            }return recipeDTO;
         }
         catch (SQLException e){
             throw new DALException(e.getMessage());
         }
-        return null;
+
     }
 
     /**
@@ -193,14 +194,19 @@ public class RecipeDAO implements IRecipeDAO {
     public static void main(String[] args) throws DALException {
         RecipeDAO hal = new RecipeDAO();
         IRecipeDTO one = hal.getRecipe(2);
+        System.out.println(one.toString());
 
 
 
-//        List<IRecipeDTO> liste = hal.getAllRecipes();
-//
-//        for(int i = 0; i<liste.size();i++){
-//            liste.get(i).toString();
-//        }
+
+
+
+
+        List<IRecipeDTO> liste = hal.getAllRecipes();
+
+      for(int i = 0; i<liste.size();i++){
+          System.out.println(liste.get(i).toString());
+        }
 
 
 
