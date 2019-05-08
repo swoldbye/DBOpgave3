@@ -10,7 +10,7 @@ public class ProductDTO implements IProductDTO {
     private List<IUserDTO> workers;
     private List<ICommodityDTO> commodities;
     private Date date;
-    private boolean manufactured;
+    private boolean manufactured;   //FixMe Control this works with three states (NULL, false, true)
 
     public ProductDTO(int id, String name, int recipe, int orderedBy, int quantity, List<IUserDTO> workers, List<ICommodityDTO> commodities, Date date, boolean manufactured) {   //Retrieve ProductDTO from database
         this.name = name;

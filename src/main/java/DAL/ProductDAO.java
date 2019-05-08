@@ -58,7 +58,7 @@ public class ProductDAO implements IProductDAO {
 
         for(ICommodityDTO com : pro.getCommodities()) {
             preStatement.setInt(1, pro.getID());
-            preStatement.setInt(2, com.getID());
+            preStatement.setInt(2, com.getBatch_id());
             preStatement.execute();
         }
     }
@@ -112,17 +112,22 @@ public class ProductDAO implements IProductDAO {
         return users;
     }
 
-    private List<ICommodityDTO> getProductCommodities(int productID, Connection con) throws SQLException {
-        ICommodityDAO commodityDAO = new CommodityDAO();
-        List<ICommodityDTO> commodities = new ArrayList<>();
+    private List<ICommodityDTO> getProductCommodities(int productID, Connection con) throws DALException {
+        List<ICommodityDTO> commodities = null;
+        try {
+            ICommodityDAO commodityDAO = new CommodityDAO();
+            commodities = new ArrayList<>();
 
-        PreparedStatement preStatement = con.prepareStatement("SELECT commodity_batch_id FROM commodity_line WHERE product_batch_id = ?");
-        preStatement.setInt(1, productID);
-        ResultSet rsCommodities = preStatement.executeQuery();
+            PreparedStatement preStatement = con.prepareStatement("SELECT commodity_batch_id FROM commodity_line WHERE product_batch_id = ?");
+            preStatement.setInt(1, productID);
+            ResultSet rsCommodities = preStatement.executeQuery();
 
-        while(rsCommodities.next()) {
-            ICommodityDTO commodity = commodityDAO.getCommmodity(rsCommodities.getInt(1));
-            commodities.add(commodity);
+            while(rsCommodities.next()) {
+                ICommodityDTO commodity = commodityDAO.getCommmodity(rsCommodities.getInt(1));
+                commodities.add(commodity);
+            }
+        } catch (SQLException e) {
+            throw new DALException(e.getMessage());
         }
         return commodities;
     }
