@@ -16,8 +16,10 @@ public class RecipeDAOTest{
     public void test()throws DALException{
         try {
 
+            Date date = new Date(2008,05,05);
+
             IRecipeDTO testRecipeDTO = new RecipeDTO(5,"Panodil",
-                    new Date(2008,05,05),35,"Sidenafil",25.00);
+                    date,35);
 
             iRecipeDAO.createRecipe(testRecipeDTO);
             IRecipeDTO returnedRecipe = iRecipeDAO.getRecipe(5);

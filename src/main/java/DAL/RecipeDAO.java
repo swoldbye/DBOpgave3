@@ -1,7 +1,9 @@
 package DAL;
 
+import DTO.IIngridient_lineDTO;
 import DTO.IRecipeDTO;
 import DTO.RecipeDTO;
+import DTO.ingrdient_lineDTO;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -14,6 +16,7 @@ public class RecipeDAO implements IRecipeDAO {
 
     DBConnection dbConnection = new DBConnection();
 
+
     /**
      *
      * @param recipe
@@ -23,14 +26,22 @@ public class RecipeDAO implements IRecipeDAO {
 
         try(Connection connection = dbConnection.createConnection()){
 
-            String query = "INSERT INTO recipe VALUES(recipe_id = ?, recipe_name = ?, reg_date = ?, storage_time = ?)";
+            String query = "INSERT INTO recipe VALUES(?, ?, DATE ?, ?)";
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setInt(1, recipe.getRecipe_id());
             statement.setString(2, recipe.getRecipe_name());
             statement.setDate(3, recipe.getRegistration_date());
             statement.setInt(4,recipe.getStorage_time());
-            statement.execute();
+            statement.executeUpdate();
 
+            for (IIngridient_lineDTO line: recipe.getIngredient_line()){
+                String query1 = "INSERT INTO ingredient_line VALUES(?,?,?)";
+                PreparedStatement preparedStatement = connection.prepareStatement(query1);
+                preparedStatement.setInt(1,recipe.getRecipe_id());
+                preparedStatement.setInt(2,line.getIngredient_id());
+                preparedStatement.setDouble(3,line.getQuantity());
+                preparedStatement.executeUpdate();
+            }
         }
         catch(SQLException e){
             throw new DALException(e.getMessage());
@@ -47,22 +58,24 @@ public class RecipeDAO implements IRecipeDAO {
 
         try(Connection connection = dbConnection.createConnection()){
 
-            String query = "SELECT recipe.*, ingredient_line.quantity, ingredient.ingredient_name FROM recipe" +
-                    "JOIN ingredient_line ON recipe.recipe_id = ingredient_line.recipe_id" +
+            String query = "SELECT recipe.*, ingredient_line.quantity, ingredient.ingredient_name FROM recipe " +
+                    "JOIN ingredient_line ON recipe.recipe_id = ingredient_line.recipe_id " +
                     "JOIN ingredient ON ingredient.ingredient_id = ingredient_line.ingredient_id " +
                     "WHERE recipe.recipe_id = ?";
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setInt(1,recipe_id);
             ResultSet resultSet = preparedStatement.executeQuery();
 
+            IRecipeDTO recipeDTO = new RecipeDTO();
+            recipeDTO.setRecipe_id(resultSet.getInt(1));
+            recipeDTO.setRecipe_name(resultSet.getString(2));
+            recipeDTO.setRegistration_date(resultSet.getDate(3));
+            recipeDTO.setStorage_time(resultSet.getInt(4));
+
             while (resultSet.next()){
-                IRecipeDTO recipeDTO = new RecipeDTO();
-                recipeDTO.setRecipe_id(resultSet.getInt(1));
-                recipeDTO.setRecipe_name(resultSet.getString(2));
-                recipeDTO.setRegistration_date(resultSet.getDate(3));
-                recipeDTO.setStorage_time(resultSet.getInt(4));
-                recipeDTO.setRecipe_name(resultSet.getString(5));
-                recipeDTO.setQuantity(resultSet.getDouble(6));
+                IIngridient_lineDTO ingredientLine = new ingrdient_lineDTO(resultSet.getInt(5),
+                        resultSet.getString(6));
+                recipeDTO.addIngredient_line(ingredientLine);
                 return recipeDTO;
             }
         }
@@ -83,10 +96,9 @@ public class RecipeDAO implements IRecipeDAO {
 
         try(Connection connection = dbConnection.createConnection()){
 
-            String query = "SELECT recipe.*, ingredient_line.quantity, ingredient.ingredient_name FROM recipe" +
-                    "JOIN ingredient_line ON recipe.recipe_id = ingredient_line.recipe_id" +
-                    "JOIN ingredient ON ingredient.ingredient_id = ingredient_line.ingredient_id " +
-                    "WHERE recipe.recipe_id = ingredient_line.recipe_id";
+            String query = "SELECT recipe.*, ingredient_line.quantity, ingredient.ingredient_name FROM recipe " +
+                    "JOIN ingredient_line ON recipe.recipe_id = ingredient_line.recipe_id " +
+                    "JOIN ingredient ON ingredient.ingredient_id = ingredient_line.ingredient_id";
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -96,9 +108,13 @@ public class RecipeDAO implements IRecipeDAO {
                 recipeDTO.setRecipe_name(resultSet.getString(2));
                 recipeDTO.setRegistration_date(resultSet.getDate(3));
                 recipeDTO.setStorage_time(resultSet.getInt(4));
-                recipeDTO.setRecipe_name(resultSet.getString(5));
-                recipeDTO.setQuantity(resultSet.getDouble(6));
-                recipes.add(recipeDTO);
+
+                while (resultSet.next()){
+                    IIngridient_lineDTO ingredientLine = new ingrdient_lineDTO(resultSet.getInt(5),
+                            resultSet.getString(6));
+                    recipeDTO.addIngredient_line(ingredientLine);
+                    recipes.add(recipeDTO);
+                }
             }
             return recipes;
         }

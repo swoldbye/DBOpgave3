@@ -1,6 +1,7 @@
 package DTO;
 
 import java.sql.Date;
+import java.util.List;
 
 public interface IRecipeDTO {
 
@@ -20,14 +21,11 @@ public interface IRecipeDTO {
 
     void setStorage_time(int storage_time);
 
-    String getIngredient_name();
+    List<IIngridient_lineDTO> getIngredient_line();
 
-    void setIngredient_name(String ingredient_name);
-
-    double getQuantity();
-
-    void setQuantity(double quantity);
+    void setIngredient_line(List<IIngridient_lineDTO> ingredient_line);
 
     String toString();
 
+    void addIngredient_line(IIngridient_lineDTO object);
 }
