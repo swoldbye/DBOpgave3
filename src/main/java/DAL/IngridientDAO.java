@@ -4,6 +4,7 @@ import DTO.IIngridientDTO;
 import DTO.IngridientDTO;
 
 import java.sql.*;
+import java.util.ArrayList;
 
 public class IngridientDAO implements IIngridientDAO {
     DBConnection conn = new DBConnection();
@@ -25,7 +26,7 @@ public class IngridientDAO implements IIngridientDAO {
             statement.setInt(1, ingridient.getIngredient_id());
             statement.setString(2, ingridient.getIngredient_name());
             statement.setBoolean(3, ingridient.getNeeds_refill());
-            statement.executeQuery();
+            statement.execute();
 
         } catch (SQLException e) {
             throw new DALException(e.getMessage());
@@ -98,48 +99,48 @@ public class IngridientDAO implements IIngridientDAO {
 
 
 
-  /*  public ArrayList<IIngridientDTO> getIngredientList(){
-        IIngridientDTO ingredient;
+  public ArrayList<IIngridientDTO> getIngredientList() throws DALException{
+
 
         ArrayList<IIngridientDTO> ingredintList = new ArrayList<>();
         String sql ="SELECT * FROM ingredient";
-        try (Connection connection = createConnection()) {
+        try (Connection connection = conn.createConnection()) {
 
             Statement statement = connection.createStatement();
             ResultSet result = statement.executeQuery(sql);
 
 
             while(result.next()) {
-                ingredient = getIngredient(result.getInt(1));
-
+                IIngridientDTO  ingredient = new IngridientDTO(result.getInt(1),result.getString(2),result.getBoolean(3));
+                ingredintList.add(ingredient);
             }
             return ingredintList;
 
         } catch (SQLException e) {
-            //Remember to handle Exceptions gracefully! Connection might be Lost....
-            e.printStackTrace();
 
+            throw new DALException("hej");
+            //Remember to handle Exceptions gracefully! Connection might be Lost....
         }
 
-
     }
-*/
+
 
         public static void main (String[]args) throws DALException {
-            IIngridientDTO ingridien = new IngridientDTO(1, "dsadsadasdsfdsfsdf", true);
+            /*IIngridientDTO ingridien = new IngridientDTO(100, "dsadsadasdsfdsfsdf", true);
 
-            IngridientDAO one = new IngridientDAO();
 
-            one.deleteIngridient(1);
+
+
             one.createIngridient(ingridien);
+            one.deleteIngridient(1);*/
+            IngridientDAO one = new IngridientDAO();
+            ArrayList<IIngridientDTO> list = one.getIngredientList();
 
-            ingridien.setIngredient_name("AAAAAA");
-            ingridien.setNeeds_refill(false);
-            one.updateIngridient(ingridien);
+            for(int i = 0; i< list.size();i++){
+                System.out.println(list.get(i).toString());
+            }
 
-            one.getIngredient(1);
 
-            System.out.println(one.getIngredient(1).getNeeds_refill());
 
 
         }

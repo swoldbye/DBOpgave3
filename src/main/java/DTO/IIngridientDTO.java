@@ -14,4 +14,6 @@ public interface IIngridientDTO {
 
     void setNeeds_refill(boolean needs_refill);
 
+    String toString();
+
 }
