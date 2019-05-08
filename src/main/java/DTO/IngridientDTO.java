@@ -48,7 +48,7 @@ public class IngridientDTO implements IIngridientDTO {
     }
 
     public String toString(){
-        String str = "ID: "+ingredient_id+", Name: "+ ingredient_name+", Needs refill: "+ingredient_name;
+        String str = "ID: "+ingredient_id+", Name: "+ ingredient_name+", Needs refill: "+needs_refill;
         return str;
     }
 }

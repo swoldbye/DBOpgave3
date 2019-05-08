@@ -2,6 +2,7 @@ package DAL;
 
 import DTO.IIngridientDTO;
 import DTO.IngridientDTO;
+import sun.rmi.server.InactiveGroupException;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -11,9 +12,9 @@ public class IngridientDAO implements IIngridientDAO {
 
     //public IngridientDAO(){}
 
-   /* private Connection createConnection() throws SQLException {
-        return  DriverManager.getConnection("jdbc:mysql://ec2-52-30-211-3.eu-west-1.compute.amazonaws.com/s180943?"
-                + "UXZTadQzbPrlIosGCZYNF");
+    /*private Connection createConnection() throws SQLException {
+        return  DriverManager.getConnection("jdbc:mysql://localhost:3306/root?"
+                + "Firma2018");
     }*/
 
 
@@ -37,12 +38,12 @@ public class IngridientDAO implements IIngridientDAO {
     public IIngridientDTO updateIngridient(IIngridientDTO ingridient) throws DALException {
         try (Connection connection = conn.createConnection()) {
 
-            String sql = "UPDATE ingredient SET ingridient_name = ?, needs_refill=?  WHERE ingredient_id = ?";
+            String sql = "UPDATE ingredient SET ingredient_name = ?, needs_refill=?  WHERE ingredient_id = ?";
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1, ingridient.getIngredient_name());
             statement.setBoolean(2, ingridient.getNeeds_refill());
             statement.setInt(3, ingridient.getIngredient_id());
-            statement.executeQuery();
+            statement.execute();
 
         } catch (SQLException e) {
             throw new DALException(e.getMessage());
@@ -75,7 +76,7 @@ public class IngridientDAO implements IIngridientDAO {
 
                 //I do npt use PreparedStatement because data is selectet and not updated.
 
-                String sql = "SELECT * FROM ingredient WHERE ingedient_id = ?";
+                String sql = "SELECT * FROM ingredient WHERE ingredient_id = ?";
                 PreparedStatement statement = connection.prepareStatement(sql);
                 statement.setInt(1, ingredient_id);
 
@@ -91,6 +92,7 @@ public class IngridientDAO implements IIngridientDAO {
                 }
 
             } catch (SQLException e) {
+                e.getSQLState().toString();
                 throw new DALException("hej");
             }
             return null;
@@ -106,8 +108,8 @@ public class IngridientDAO implements IIngridientDAO {
         String sql ="SELECT * FROM ingredient";
         try (Connection connection = conn.createConnection()) {
 
-            Statement statement = connection.createStatement();
-            ResultSet result = statement.executeQuery(sql);
+            PreparedStatement statement = connection.prepareStatement(sql);
+            ResultSet result = statement.executeQuery();
 
 
             while(result.next()) {
@@ -126,19 +128,28 @@ public class IngridientDAO implements IIngridientDAO {
 
 
         public static void main (String[]args) throws DALException {
-            /*IIngridientDTO ingridien = new IngridientDTO(100, "dsadsadasdsfdsfsdf", true);
+            IIngridientDTO ingridien = new IngridientDTO(100, "dsadsadasdsfdsfsdf", true);
+            IIngridientDTO ingridien2 = new IngridientDTO(100, "dsadsadasdsfdsfsdf", false);
 
 
-
-
+/*
             one.createIngridient(ingridien);
             one.deleteIngridient(1);*/
             IngridientDAO one = new IngridientDAO();
-            ArrayList<IIngridientDTO> list = one.getIngredientList();
+
+            //System.out.println(one.getIngredient(2));
+
+            //System.out.println(one.getIngredient(1).toString());
+            one.createIngridient(ingridien);
+            System.out.println(one.getIngredient(100).toString());
+            one.updateIngridient(ingridien2);
+            System.out.println(one.getIngredient(100).toString());
+
+            /*ArrayList<IIngridientDTO> list = one.getIngredientList();
 
             for(int i = 0; i< list.size();i++){
                 System.out.println(list.get(i).toString());
-            }
+            }*/
 
 
 
