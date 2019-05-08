@@ -40,18 +40,18 @@ public class CommodityDAO implements ICommodityDAO {
      * Joins commodity and and ingredient tables (to get the ingredient name for the batch,
      * and returns a commodity with a certain batch id
      *
-     * @param ingredient_id
+     * @param batch_id
      * @return
      * @throws DALException
      */
-    public ICommodityDTO getCommmodity(int ingredient_id) throws DALException {
+    public ICommodityDTO getCommmodity(int batch_id) throws DALException {
 
         try(Connection connection = dbConnection.createConnection()) {
 
             String query = "SELECT commodity.*,ingredient_name FROM commodity JOIN ingredient " +
-                    "ON commodity.ingredient_id = ingredient.ingredient_id WHERE ingredient.ingredient_id = ?";
+                    "ON commodity.ingredient_id = ingredient.ingredient_id WHERE commodity.batch_id = ?";
             PreparedStatement preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setInt(1,ingredient_id);
+            preparedStatement.setInt(1,batch_id);
             ResultSet resultSet = preparedStatement.executeQuery();
 
             while(resultSet.next()){
