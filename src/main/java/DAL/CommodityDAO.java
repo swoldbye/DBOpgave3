@@ -150,44 +150,44 @@ public class CommodityDAO implements ICommodityDAO {
         }
     }
 }
-//class test{
-//    public static void main(String[] args) {
-//
-//        ICommodityDAO comDAO = new CommodityDAO();
-//
-//        List<ICommodityDTO> list = new ArrayList<>();
-//
-//        ICommodityDTO com = new CommodityDTO();
-////        com.setBatch_id(12);
-////        com.setIngrdient_id(12);
-////        com.setIs_leftover(false);
-////        com.setQuantity(8);
-////        com.setManufacture(false);
-//
-//        try {
-//            //comDAO.createCommodity(com);
-////            com = comDAO.getCommmodity(12);
-////            System.out.println(com);
-////            com = comDAO.getCommmodity(1);
-////            System.out.println(com);
-////            com = comDAO.getCommmodity(2);
-////            System.out.println(com);
-//
-////            list = comDAO.getCommodityList();
-////            for(int i=0;i<list.size();i++){
-////                System.out.println(list.get(i));
-////            }
-//
-//            comDAO.deleteCommodity(12);
-//
-//
-//        }
-//        catch (Exception e){
-//            System.out.println(e);
-//        }
-//
-//
-//
-//
-//    }
-//}
+class test{
+    public static void main(String[] args) {
+
+        ICommodityDAO comDAO = new CommodityDAO();
+
+        List<ICommodityDTO> list = new ArrayList<>();
+
+        ICommodityDTO com = new CommodityDTO();
+//        com.setBatch_id(12);
+//        com.setIngrdient_id(12);
+//        com.setIs_leftover(false);
+//        com.setQuantity(8);
+//        com.setManufacture(false);
+
+        try {
+            //comDAO.createCommodity(com);
+//            com = comDAO.getCommmodity(12);
+//            System.out.println(com);
+//            com = comDAO.getCommmodity(1);
+//            System.out.println(com);
+//            com = comDAO.getCommmodity(2);
+//            System.out.println(com);
+
+            list = comDAO.getCommodityList();
+            for(int i=0;i<list.size();i++){
+                System.out.println(list.get(i));
+            }
+
+            //comDAO.deleteCommodity(12);
+
+
+        }
+        catch (Exception e){
+            System.out.println(e);
+        }
+
+
+
+
+    }
+}

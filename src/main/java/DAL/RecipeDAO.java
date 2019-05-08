@@ -129,6 +129,7 @@ public class RecipeDAO implements IRecipeDAO {
             preparedStatement1.executeQuery();
 
             connection.commit();
+
             connection.setAutoCommit(true);
 
         }
