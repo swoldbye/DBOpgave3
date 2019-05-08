@@ -6,15 +6,15 @@ import java.util.List;
 
 public interface ICommodityDAO {
 
-    void createCommodity() throws DALException;
+    void createCommodity(ICommodityDTO commodity) throws DALException;
 
-    ICommodityDTO getCommmodity(int batch_id);
+    ICommodityDTO getCommmodity(int ingredient_id) throws DALException;
 
-    List<ICommodityDTO> getCommodityList();
+    List<ICommodityDTO> getCommodityList() throws DALException;
 
-    void UpdateCommodity();
+    void updateCommodity(ICommodityDTO commodity) throws DALException;
 
-    void DeleteCommodity();
+    void deleteCommodity(int batch_id) throws DALException;
 
 
 }
