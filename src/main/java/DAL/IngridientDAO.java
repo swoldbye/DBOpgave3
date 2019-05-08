@@ -1,10 +1,9 @@
 package DAL;
 
-import IngridientDTO.IIngridientDTO;
-import IngridientDTO.IngridientDTO;
+import DTO.IIngridientDTO;
+import DTO.IngridientDTO;
 
 import java.sql.*;
-import java.util.ArrayList;
 
 public class IngridientDAO implements IIngridientDAO {
      DBConnection conn = new DBConnection();

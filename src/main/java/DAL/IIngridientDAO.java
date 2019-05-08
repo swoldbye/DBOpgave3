@@ -1,9 +1,6 @@
 package DAL;
 
-import IngridientDTO.IIngridientDTO;
-import IngridientDTO.IngridientDTO;
-
-import java.util.ArrayList;
+import DTO.IIngridientDTO;
 
 public interface IIngridientDAO {
 

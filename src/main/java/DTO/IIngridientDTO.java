@@ -1,4 +1,4 @@
-package IngridientDTO;
+package DTO;
 
 public interface IIngridientDTO {
 

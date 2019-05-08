@@ -1,4 +1,6 @@
-package IngridientDTO;
+package DTO;
+
+import DTO.IIngridientDTO;
 
 public class IngridientDTO implements IIngridientDTO {
 
