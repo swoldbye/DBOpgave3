@@ -1,10 +1,5 @@
-//import java.util.ArrayList;
-//import java.util.List;
-//
-import static org.junit.Assert.*;
-//import DAL.UserDAO;
-//import DAL.IUserDAO;
 
+import static org.junit.Assert.*;
 import DAL.CommodityDAO;
 import DAL.DALException;
 import DAL.ICommodityDAO;
@@ -47,7 +42,6 @@ public class CommodityDAOTest{
 
             returnedCommodity = iCommodityDAO.getCommmodity(50);
             assertEquals(testCommodityDTO.toString(),returnedCommodity.toString());
-
 
             iCommodityDAO.deleteCommodity(50);
             for (ICommodityDTO commodity : iCommodityDAO.getCommodityList()){
