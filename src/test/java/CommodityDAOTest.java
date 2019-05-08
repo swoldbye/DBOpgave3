@@ -48,20 +48,13 @@ public class CommodityDAOTest{
             returnedCommodity = iCommodityDAO.getCommmodity(50);
             assertEquals(testCommodityDTO.toString(),returnedCommodity.toString());
 
+
             iCommodityDAO.deleteCommodity(50);
-            for (ICommodityDTO commodity: AllCommodities){
+            for (ICommodityDTO commodity : iCommodityDAO.getCommodityList()){
                 if (testCommodityDTO.getBatch_id() == commodity.getBatch_id()){
                     fail();
                 }
             }
-
-
-
-
-
-
-
-
         }
         catch (DALException e){
             e.printStackTrace();
