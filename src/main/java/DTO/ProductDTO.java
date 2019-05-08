@@ -5,17 +5,17 @@ import java.util.Calendar;
 import java.util.List;
 
 public class ProductDTO implements IProductDTO {
-    private int id, recipe, orderedBy, quantity;
+    private int id, recipeID, orderedBy, quantity;
     private String name;
     private List<IUserDTO> workers;
     private List<ICommodityDTO> commodities;
     private Date date;
     private boolean manufactured;   //FixMe Control this works with three states (NULL, false, true)
 
-    public ProductDTO(int id, String name, int recipe, int orderedBy, int quantity, List<IUserDTO> workers, List<ICommodityDTO> commodities, Date date, boolean manufactured) {   //Retrieve ProductDTO from database
+    public ProductDTO(int id, String name, int recipeID, int orderedBy, int quantity, List<IUserDTO> workers, List<ICommodityDTO> commodities, Date date, boolean manufactured) {   //Retrieve ProductDTO from database
         this.name = name;
         this.id = id;
-        this.recipe = recipe;
+        this.recipeID = recipeID;
         this.orderedBy = orderedBy;
         this.quantity = quantity;
         this.workers = workers;
@@ -23,10 +23,10 @@ public class ProductDTO implements IProductDTO {
         this.date = date;
         this.manufactured = manufactured;
     }
-    public ProductDTO(int id, String name, int recipe, int orderedBy, int quantity, List<IUserDTO> workers, List<ICommodityDTO> commodities) {              //Create ProductDTO to insert into database with current date
+    public ProductDTO(int id, String name, int recipeID, int orderedBy, int quantity, List<IUserDTO> workers, List<ICommodityDTO> commodities) {              //Create ProductDTO to insert into database with current date
         this.name = name;
         this.id = id;
-        this.recipe = recipe;
+        this.recipeID = recipeID;
         this.orderedBy = orderedBy;
         this.quantity = quantity;
         this.workers = workers;
@@ -37,13 +37,16 @@ public class ProductDTO implements IProductDTO {
         return id;
     }
     public int getRecipeID() {
-        return recipe;
+        return recipeID;
     }
     public int getOrderedBy() {
         return orderedBy;
     }
     public int getQuantity() {
         return quantity;
+    }
+    public String getName() {
+        return name;
     }
     public List<IUserDTO> getWorkers() {
         return workers;
@@ -53,5 +56,8 @@ public class ProductDTO implements IProductDTO {
     }
     public Date getDate() {
         return date;
+    }
+    public boolean isManufactured() {
+        return manufactured;
     }
 }

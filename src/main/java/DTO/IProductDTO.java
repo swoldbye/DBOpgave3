@@ -8,7 +8,9 @@ public interface IProductDTO {
     public int getRecipeID();
     public int getOrderedBy();
     public int getQuantity();
+    public String getName();
     public List<IUserDTO> getWorkers();
     public List<ICommodityDTO> getCommodities();
     public Date getDate();
+    public boolean isManufactured();
 }

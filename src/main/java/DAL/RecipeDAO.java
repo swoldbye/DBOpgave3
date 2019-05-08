@@ -3,10 +3,7 @@ package DAL;
 import DTO.IRecipeDTO;
 import DTO.RecipeDTO;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -70,6 +67,25 @@ public class RecipeDAO implements IRecipeDAO {
             throw new DALException(e.getMessage());
         }
         return null;
+    }
+
+    public String getRecipeName(int id, Connection con) throws DALException {
+        String name = null;
+        try {
+//            String query = "SELECT recipe_id, recipe_name FROM recipe WHERE recipe_id = ? UNION SELECT recipe_id, recipe_name FROM ShadowRecipe WHERE recipe_id = ?;";
+            String query = "SELECT recipe_name FROM recipe WHERE recipe_id = ? UNION SELECT recipe_name FROM ShadowRecipe WHERE recipe_id = ?;";
+            PreparedStatement preStatement = con.prepareStatement(query);
+            preStatement.setInt(1, id);
+            preStatement.setInt(2, id);
+            ResultSet rs = preStatement.executeQuery();
+            if(rs.next() && rs.isLast()) {   //TODO Control this works, first time use of the method (or argue that id's should control it's not a duplicate in both tables before administrating it)
+                return rs.getString(1);
+            }else {
+                throw new DALException("Duplicate recipes found");
+            }
+        } catch(SQLException e) {
+            throw new DALException(e.getMessage());
+        }
     }
 
     /**

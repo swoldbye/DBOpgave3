@@ -11,9 +11,9 @@ public class ProductDAO implements IProductDAO {
 
     //Create
     @Override
-    public void createProduct(IProductDTO pro) throws DALException {
+    public boolean createProduct(IProductDTO pro) throws DALException {
         try(Connection con = db.createConnection()) {
-            String query = "INSERT INTO product VALUES(?, ?, ?, ?, ?)";
+            String query = "INSERT INTO product VALUES(?, ?, ?, ?, ?, ?)";
             PreparedStatement preStatement = con.prepareStatement(query);
 
             preStatement.setInt(1, pro.getID());
@@ -21,6 +21,7 @@ public class ProductDAO implements IProductDAO {
             preStatement.setInt(3, pro.getRecipeID());
             preStatement.setInt(4, pro.getQuantity());
             preStatement.setDate(5, pro.getDate());
+            preStatement.setBoolean(6, pro.isManufactured());
 
             preStatement.execute();
 
@@ -28,21 +29,22 @@ public class ProductDAO implements IProductDAO {
                 createProductionLines(pro, con);
             }
             createCommodityLines(pro, con);
-
+            return true;
         } catch (SQLException e) {
             throw new DALException(e.getMessage());
         }
     }
 
-    @Override //FixMe Should be made private if not used outside of creating product
+    @Override //FixMe Should be made private if not used outside of creating product && ACID?
     public void createProductionLines(IProductDTO pro, Connection con) throws DALException {
         try {
             String query = "INSERT INTO production(?, ?)";
             PreparedStatement preStatement = con.prepareStatement(query);
+            int proID = pro.getID();
 
             for(IUserDTO user : pro.getWorkers()) {
                 preStatement.setInt(1, user.getID());
-                preStatement.setInt(2, pro.getID());
+                preStatement.setInt(2, proID);
                 preStatement.execute();
             }
 
@@ -53,7 +55,7 @@ public class ProductDAO implements IProductDAO {
 
     @Override //FixMe Should be made private if not used outside of creating product
     public void createCommodityLines(IProductDTO pro, Connection con) throws SQLException {
-        String query = "INSERT INTO commodity_line (?, ?)";
+        String query = "INSERT INTO commodity_line VALUES(?, ?)";
         PreparedStatement preStatement = con.prepareStatement(query);
 
         for(ICommodityDTO com : pro.getCommodities()) {
@@ -65,29 +67,33 @@ public class ProductDAO implements IProductDAO {
 
     //Read
     @Override
-    public List<IProductDTO> readAllProducts() throws DALException {    //TODO Split into readProducts methods for manufactured and not-yet-manufactured instances of product?
+    public List<IProductDTO> getAllProducts() throws DALException {    //TODO Split into readProducts methods for manufactured and not-yet-manufactured instances of product?
         List<IProductDTO> products = new ArrayList<>();
 
         try(Connection con = db.createConnection()) {
-            ResultSet rsProducts = con.prepareStatement("SELECT * FROM product").executeQuery();
+//            ResultSet rsProducts = con.prepareStatement("SELECT product.*, recipe.recipe_name FROM product JOIN recipe ON product.recipe_id = recipe.recipe_id;").executeQuery();
+            ResultSet rsProducts = con.prepareStatement("SELECT product.* FROM product").executeQuery();
 
             while(rsProducts.next()) {
                 int proID = rsProducts.getInt(1);
                 List<IUserDTO> users = getProductWorkers(proID, con);
                 List<ICommodityDTO> commodities = getProductCommodities(proID, con);
+                IRecipeDAO recipeDAO = new RecipeDAO();
 
                 IProductDTO product = new ProductDTO(
-                        proID,                                  //ID
-                        rsProducts.getString(7),    //Name of product
-                        rsProducts.getInt(2),       //Recipe number
-                        rsProducts.getInt(3),       //Orderers ID
-                        rsProducts.getInt(4),       //Quantity of product
-                        users,                                  //Laborants working on it
-                        commodities,                            //Commodities used
-                        rsProducts.getDate(5),      //Date of production
-                        rsProducts.getBoolean(6)    //Manufactured
+                        proID,                                                          //ID
+//                        rsProducts.getString(7),    //Name of product
+                        recipeDAO.getRecipeName(rsProducts.getInt(2), con), //Name of product
+                        rsProducts.getInt(2),                               //Recipe ID
+                        rsProducts.getInt(3),                               //Orderers ID
+                        rsProducts.getInt(4),                               //Quantity of product
+                        users,                                                          //Laborants working on it
+                        commodities,                                                    //Commodities used
+                        rsProducts.getDate(5),                              //Date of production
+                        rsProducts.getBoolean(6)                            //Manufactured
                 );
                 products.add(product);
+//                products.add(getProduct(rsProducts, con));
             }
 
         } catch (SQLException e) {
@@ -95,6 +101,39 @@ public class ProductDAO implements IProductDAO {
         }
 
         return products;
+    }
+
+    @Override
+    public IProductDTO getProduct(int id) throws DALException {
+        IProductDTO product = null;
+        try (Connection con = db.createConnection()){
+            PreparedStatement preStatement = con.prepareStatement("SELECT * FROM product WHERE batch_id = ?");
+            preStatement.setInt(1, id);
+            ResultSet rsProducts = preStatement.executeQuery();
+
+            if(rsProducts.next()) {
+                int proID = rsProducts.getInt(1);
+                List<IUserDTO> users = getProductWorkers(proID, con);
+                List<ICommodityDTO> commodities = getProductCommodities(proID, con);
+                IRecipeDAO recipeDAO = new RecipeDAO();
+
+                product = new ProductDTO(
+                        proID,                                                          //ID
+    //                        rsProducts.getString(7),    //Name of product
+                        recipeDAO.getRecipeName(rsProducts.getInt(2), con), //Name of product
+                        rsProducts.getInt(2),                               //Recipe ID
+                        rsProducts.getInt(3),                               //Orderers ID
+                        rsProducts.getInt(4),                               //Quantity of product
+                        users,                                                          //Laborants working on it
+                        commodities,                                                    //Commodities used
+                        rsProducts.getDate(5),                              //Date of production
+                        rsProducts.getBoolean(6)                            //Manufactured
+                );
+            }
+        } catch (SQLException e) {
+            throw new DALException(e.getMessage());
+        }
+        return product;
     }
 
     private List<IUserDTO> getProductWorkers(int productID, Connection con) throws SQLException {
