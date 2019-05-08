@@ -19,7 +19,10 @@ public class CommodityDAOTest{
     public void test() throws DALException{
         try {
 
-            ICommodityDTO commodityDTO = new CommodityDTO();
+            ICommodityDTO commodityDTO = new CommodityDTO(20,20,
+                    5.2,true,"homecook");
+
+
 
 
 
