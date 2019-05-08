@@ -248,7 +248,7 @@ public class ProductDAO implements IProductDAO {
     @Override
     public void deleteProduct(int id) throws DALException {
         try(Connection con = db.createConnection()) {
-            String query = "DELETE FROM product WHERE product_id = ?";
+            String query = "DELETE FROM product WHERE batch_id = ?";
             PreparedStatement preStatement = con.prepareStatement(query);
             preStatement.setInt(1, id);
             preStatement.execute();
