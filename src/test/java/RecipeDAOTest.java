@@ -80,7 +80,7 @@ public class RecipeDAOTest{
     public void createRecipe() throws DALException{
         Date date = new Date(22,5,2018);
         //iRecipeDAO.deleteRecipe(100);
-        IRecipeDTO newRecipe = new RecipeDTO(103,"DenNyeOpskrift",date,80);
+        IRecipeDTO newRecipe = new RecipeDTO(100,"DenNyeOpskrift",date,80);
         IIngredient_lineDTO ingredient1 = new Ingredient_lineDTO(1,10,"Sildenafil");
         IIngredient_lineDTO ingredient2 = new Ingredient_lineDTO(4,10,"Magnesiumstearat");
 
@@ -88,7 +88,7 @@ public class RecipeDAOTest{
         newRecipe.addIngredient_line(ingredient2);
 
         iRecipeDAO.createRecipe(newRecipe);
-        IRecipeDTO recipeFromDatabase = iRecipeDAO.getRecipe(103);
+        IRecipeDTO recipeFromDatabase = iRecipeDAO.getRecipe(100);
 
         assertEquals(newRecipe.toString(),recipeFromDatabase.toString());
 
