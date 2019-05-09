@@ -48,7 +48,8 @@ public class ProductDAOTest {
 
             //Mark as finished
 
-        } finally {
+        }
+        finally {
             //Delete product - Always deletes it, even though Create or Update might fail
             proDAO.deleteProduct(9999);
             assertNull(proDAO.getProduct(9999));

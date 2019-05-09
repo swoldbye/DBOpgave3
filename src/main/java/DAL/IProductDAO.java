@@ -12,8 +12,8 @@ import java.util.List;
 public interface IProductDAO {
     boolean createProduct(IProductDTO pro) throws DALException;     //Creates a new product
 //    void createProduct(IProductDTO pro) throws DALException;     //Creates a new product
-    void createProductionLines(IProductDTO pro, Connection con) throws DALException;
-    void createCommodityLines(IProductDTO pro, Connection con) throws SQLException;
+//    void createProductionLines(IProductDTO pro, Connection con) throws DALException;
+//    void createCommodityLines(IProductDTO pro, Connection con) throws SQLException;
     List<IProductDTO> getAllProducts() throws DALException;         //Returns list of all products
     IProductDTO getProduct(int id) throws DALException;   //Returns a single Product
     void updateProductInfo(IProductDTO pro, List<IUserDTO> oldUsers) throws DALException; //Update the information of a Product

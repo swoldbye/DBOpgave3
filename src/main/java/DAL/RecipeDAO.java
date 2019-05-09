@@ -73,7 +73,7 @@ public class RecipeDAO implements IRecipeDAO {
         String name = null;
         try {
 //            String query = "SELECT recipe_id, recipe_name FROM recipe WHERE recipe_id = ? UNION SELECT recipe_id, recipe_name FROM ShadowRecipe WHERE recipe_id = ?;";
-            String query = "SELECT recipe_name FROM recipe WHERE recipe_id = ? UNION SELECT recipe_name FROM ShadowRecipe WHERE recipe_id = ?;";
+            String query = "SELECT recipe_name FROM recipe WHERE recipe_id = ? UNION SELECT recipe_name FROM shadowRecipe WHERE recipe_id = ?;";
             PreparedStatement preStatement = con.prepareStatement(query);
             preStatement.setInt(1, id);
             preStatement.setInt(2, id);

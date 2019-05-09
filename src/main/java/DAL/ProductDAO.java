@@ -10,19 +10,22 @@ public class ProductDAO implements IProductDAO {
     private DBConnection db = new DBConnection();
 
     //Create
-    @Override
+    @Override   //TODO ACID
     public boolean createProduct(IProductDTO pro) throws DALException {
-        try(Connection con = db.createConnection()) {
-
-            String query = "INSERT INTO product VALUES(?, ?, ?, ?, ?, ?)";
+//        try(Connection con = db.createConnection()) {
+        Connection con = db.createConnection();
+        try {
+//            con.setAutoCommit(false);
+            db.toggleAutoCommit();
+            String query = "INSERT INTO product VALUES(?, ?, ?, ?, ?)";
             PreparedStatement preStatement = con.prepareStatement(query);
 
             preStatement.setInt(1, pro.getID());
             preStatement.setInt(2, pro.getOrderedBy());
-            preStatement.setInt(3, pro.getRecipeID());
-            preStatement.setInt(4, pro.getQuantity());
-            preStatement.setDate(5, pro.getDate());
-            preStatement.setBoolean(6, pro.isManufactured());
+//            preStatement.setInt(3, pro.getRecipeID());
+            preStatement.setInt(3, pro.getQuantity());
+            preStatement.setDate(4, pro.getDate());
+            preStatement.setBoolean(5, pro.isManufactured());
 
             preStatement.execute();
 
@@ -30,39 +33,50 @@ public class ProductDAO implements IProductDAO {
                 createProductionLines(pro, con);
             }
             createCommodityLines(pro, con);
+            createProductRecipeConnection(pro, con);
+            con.commit();
             return true;
         } catch (SQLException e) {
             throw new DALException(e.getMessage());
+        } finally {
+//            try {
+            db.toggleAutoCommit();
+            db.killConnection();
+//                con.setAutoCommit(true);
+//            } catch (SQLException e) {
+//                throw new DALException(e.getMessage());
+//            }
         }
     }
 
-    @Override //FixMe Should be made private if not used outside of creating product && ACID?
-    public void createProductionLines(IProductDTO pro, Connection con) throws DALException {
-        try {
-            String query = "INSERT INTO production(?, ?)";
-            PreparedStatement preStatement = con.prepareStatement(query);
-            int proID = pro.getID();
+    private void createProductRecipeConnection(IProductDTO pro, Connection con) throws SQLException {
+        String query = "INSERT INTO product_recipe VALUES(?, ?)";
+        PreparedStatement preStatement = con.prepareStatement(query);
+        preStatement.setInt(1, pro.getRecipeID());
+        preStatement.setInt(2, pro.getID());
+        preStatement.executeUpdate();
+    }
 
-            for(IUserDTO user : pro.getWorkers()) {
-                preStatement.setInt(1, user.getID());
-                preStatement.setInt(2, proID);
-                preStatement.execute();
-            }
+    private void createProductionLines(IProductDTO pro, Connection con) throws SQLException {
+        String query = "INSERT INTO production VALUES(?, ?)";
+        PreparedStatement preStatement = con.prepareStatement(query);
+        int proID = pro.getID();
 
-        } catch (SQLException e) {
-            throw new DALException(e.getMessage());
+        for(IUserDTO user : pro.getWorkers()) {
+            preStatement.setInt(1, user.getID());
+            preStatement.setInt(2, proID);
+            preStatement.executeUpdate();
         }
     }
 
-    @Override //FixMe Should be made private if not used outside of creating product
-    public void createCommodityLines(IProductDTO pro, Connection con) throws SQLException {
+    private void createCommodityLines(IProductDTO pro, Connection con) throws SQLException {
         String query = "INSERT INTO commodity_line VALUES(?, ?)";
         PreparedStatement preStatement = con.prepareStatement(query);
 
         for(ICommodityDTO com : pro.getCommodities()) {
             preStatement.setInt(1, pro.getID());
             preStatement.setInt(2, com.getBatch_id());
-            preStatement.execute();
+            preStatement.executeUpdate();
         }
     }
 
@@ -108,7 +122,12 @@ public class ProductDAO implements IProductDAO {
     public IProductDTO getProduct(int id) throws DALException {
         IProductDTO product = null;
         try (Connection con = db.createConnection()){
-            PreparedStatement preStatement = con.prepareStatement("SELECT * FROM product WHERE batch_id = ?");
+//            PreparedStatement preStatement = con.prepareStatement("SELECT * FROM product WHERE batch_id = ?");
+            PreparedStatement preStatement = con.prepareStatement(
+                    "SELECT product.*, product_recipe.recipe_id, recipe.recipe_name FROM product \n" +
+                    "INNER JOIN product_recipe ON product.batch_id = product_recipe.batch_id \n" +
+                    "INNER JOIN recipe ON product_recipe.recipe_id = recipe.recipe_id\n" +
+                    "WHERE product.batch_id = ?;");
             preStatement.setInt(1, id);
             ResultSet rsProducts = preStatement.executeQuery();
 
@@ -120,15 +139,14 @@ public class ProductDAO implements IProductDAO {
 
                 product = new ProductDTO(
                         proID,                                                          //ID
-    //                        rsProducts.getString(7),    //Name of product
-                        recipeDAO.getRecipeName(rsProducts.getInt(2), con), //Name of product
-                        rsProducts.getInt(2),                               //Recipe ID
-                        rsProducts.getInt(3),                               //Orderers ID
-                        rsProducts.getInt(4),                               //Quantity of product
+                        rsProducts.getString(7),                            //Name of product
+                        rsProducts.getInt(6),                               //Recipe ID
+                        rsProducts.getInt(2),                               //Orderers ID
+                        rsProducts.getInt(3),                               //Quantity of product
                         users,                                                          //Laborants working on it
                         commodities,                                                    //Commodities used
-                        rsProducts.getDate(5),                              //Date of production
-                        rsProducts.getBoolean(6)                            //Manufactured
+                        rsProducts.getDate(4),                              //Date of production
+                        rsProducts.getBoolean(5)                            //Manufactured //TODO Fix 3rd possibility
                 );
             }
         } catch (SQLException e) {
@@ -197,7 +215,7 @@ public class ProductDAO implements IProductDAO {
         try{
             con.setAutoCommit(false);
             deleteStatement = con.prepareStatement("DELETE * FROM production WHERE laborant_id = ? AND product_id = ?");
-            insertStatement = con.prepareStatement("INSERT INTO production VALUES (?,?)");
+            insertStatement = con.prepareStatement("INSERT INTO production VALUES(?,?)");
 
             List<IUserDTO> newUsersTemp = newPro.getWorkers();
             newUsersTemp.removeAll(oldUsers);
