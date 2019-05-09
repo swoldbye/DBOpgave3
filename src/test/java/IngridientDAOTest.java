@@ -49,31 +49,35 @@ public class IngridientDAOTest {
 
     }
 
+    /**
+     * Metoden opretter en ingrediens og sletter den efterfølgende.
+     * Herefter hentes en liste for alle ingredienser og der søges efter den slettede ingrediens.
+     * @throws DALException
+     */
+
     @org.junit.Test
     public void deleteIngridient() throws DALException {
         IIngridientDTO ingridien = new IngridientDTO(100, "dsadsadasdsfdsfsdf", true);
         IIngridientDAO dal = new IngridientDAO();
 
         dal.createIngridient(ingridien);
-
+        dal.deleteIngridient(100);
         ArrayList<IIngridientDTO> ingrediensList = dal.getIngredientList();
 
 
         for(int i = 0; i < ingrediensList.size(); i++ ){
             if(ingrediensList.get(i).getIngredient_id()==ingridien.getIngredient_id()){
-                dal.deleteIngridient(100);
+
                 fail();
             }
 
         }
-
-
-
-
-
-
     }
 
+    /**
+     * Metoden opretter en ingrediens. Herefter anvendes getIngredient metoden og det ses om to string metoden virser det samme på de to objekter.
+     * @throws DALException
+     */
     @org.junit.Test
     public void getIngredient() throws DALException {
 
@@ -88,6 +92,12 @@ public class IngridientDAOTest {
         dal.deleteIngridient(100);
 
     }
+
+    /**
+     * Metoden henter alle ingridienser ud fra databasen som en liste. Det undersøger om antallet af objekter i listen
+     * er det samme antal som tubler i databasen. Disse tupler er talt manualt. De kunne også tælles vha aggregering.
+     * @throws DALException
+     */
 
     @org.junit.Test
     public void getIngredientList() throws DALException {
