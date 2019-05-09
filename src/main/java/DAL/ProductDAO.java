@@ -13,6 +13,7 @@ public class ProductDAO implements IProductDAO {
     @Override
     public boolean createProduct(IProductDTO pro) throws DALException {
         try(Connection con = db.createConnection()) {
+
             String query = "INSERT INTO product VALUES(?, ?, ?, ?, ?, ?)";
             PreparedStatement preStatement = con.prepareStatement(query);
 
@@ -206,6 +207,7 @@ public class ProductDAO implements IProductDAO {
 
             updateProductionLines(deleteStatement, newPro.getID(), usersToBeDeleted, con);
             updateProductionLines(insertStatement, newPro.getID(), usersToBeInserted, con);
+            con.commit();
         } catch(SQLException e) {
             if(con != null) {
                 con.rollback();
@@ -227,7 +229,7 @@ public class ProductDAO implements IProductDAO {
             statement.setInt(1, user.getID());
             statement.setInt(2, proID);
             statement.execute();
-            con.commit();
+            statement.executeUpdate();
         }
     }
 
