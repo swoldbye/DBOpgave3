@@ -86,7 +86,7 @@ public class RecipeDTO implements IRecipeDTO{
         str.append("Ingredience; ");
 
                 for(int i = 0; i<ingredient_line.size();i++){
-                    str.append(" "+ ingredient_line.get(1).toString());
+                    str.append(" "+ ingredient_line.get(i).toString());
                 }
 
                 return str.toString();

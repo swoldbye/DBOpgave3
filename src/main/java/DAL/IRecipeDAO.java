@@ -16,4 +16,12 @@ public interface IRecipeDAO {
     void updateRecipe(int recipe_id, IRecipeDTO recipe) throws DALException;
 
     void deleteRecipe(int recipe_id) throws DALException;
+
+    boolean controleIngredientLine(int recipe_id) throws DALException;
+
+    boolean controleProduct_recipe(int recipe_id) throws DALException;
+
+    boolean controleshadowIngredient_line(int recipe_id) throws DALException;
+
+    boolean controleshadowRecipe(int recipe_id) throws DALException;
 }
