@@ -23,14 +23,16 @@ public class ProductDTO implements IProductDTO {
         this.date = date;
         this.manufactured = manufactured;
     }
-    public ProductDTO(int id, String name, int recipeID, int orderedBy, int quantity, List<IUserDTO> workers, List<ICommodityDTO> commodities) {              //Create ProductDTO to insert into database with current date
+    public ProductDTO(int id, String name, int recipeID, int orderedBy, int quantity, List<IUserDTO> workers, List<ICommodityDTO> commodities, boolean manufactured) {              //Create ProductDTO to insert into database with current date
         this.name = name;
         this.id = id;
         this.recipeID = recipeID;
         this.orderedBy = orderedBy;
         this.quantity = quantity;
         this.workers = workers;
+        this.commodities = commodities;
         this.date = new Date(Calendar.getInstance().getTime().getTime());   //FixMe Kontroller at dette virker
+        this.manufactured = manufactured;
     }
 
     public int getID() {

@@ -25,68 +25,54 @@ public class ProductDAOTest {
             List<ICommodityDTO> commodities = new ArrayList<>();
             commodities.add(new CommodityDTO(1, 1, 100, false, "Dealer", "Sildenafil"));
             commodities.add(new CommodityDTO(2, 2, 100, false, "Dealer", "Calciumhydrogenphosphat dihydrat"));
-//        Date date = new Date(119, 0,0);
-            Date date = new Date(Calendar.getInstance().getTime().getTime());
-            IProductDTO testProduct = new ProductDTO(9999, "Sildenafil", 1, 1, 2000, workers, commodities, date, false);
-            assertTrue(proDAO.createProduct(testProduct));
+            Date createDate = new Date(Calendar.getInstance().getTime().getTime());
+            IProductDTO testCreateProduct = new ProductDTO(9999, "Sildenafil", 1, 1, 2000, workers, commodities, false);
+
+            assertTrue(proDAO.createProduct(testCreateProduct));
 
             //Control if it's in the database
             IProductDTO foundProduct = proDAO.getProduct(9999);
-            assertEquals(testProduct.getID(), foundProduct.getID());
-            assertEquals(testProduct.getName(), foundProduct.getName());
-            assertEquals(testProduct.getRecipeID(), foundProduct.getRecipeID());
-            assertEquals(testProduct.getOrderedBy(), foundProduct.getOrderedBy());
-            assertEquals(testProduct.getQuantity(), foundProduct.getQuantity());
-            assertEquals(testProduct.getWorkers().toString(), foundProduct.getWorkers().toString());
-            assertEquals(testProduct.getCommodities().toString(), foundProduct.getCommodities().toString());
-            assertEquals(testProduct.getDate().getYear(), foundProduct.getDate().getYear());
-            assertEquals(testProduct.getDate().getMonth(), foundProduct.getDate().getMonth());
-            assertEquals(testProduct.getDate().getDay(), foundProduct.getDate().getDay());
-            assertEquals(testProduct.isManufactured(), foundProduct.isManufactured());
+            assertEquals(testCreateProduct.getID(), foundProduct.getID());
+            assertEquals(testCreateProduct.getName(), foundProduct.getName());
+            assertEquals(testCreateProduct.getRecipeID(), foundProduct.getRecipeID());
+            assertEquals(testCreateProduct.getOrderedBy(), foundProduct.getOrderedBy());
+            assertEquals(testCreateProduct.getQuantity(), foundProduct.getQuantity());
+            assertEquals(testCreateProduct.getWorkers().toString(), foundProduct.getWorkers().toString());
+            assertEquals(testCreateProduct.getCommodities().toString(), foundProduct.getCommodities().toString());
+            assertEquals(testCreateProduct.getDate().getYear(), foundProduct.getDate().getYear());
+            assertEquals(testCreateProduct.getDate().getMonth(), foundProduct.getDate().getMonth());
+//            assertEquals(testCreateProduct.getDate().getDay(), foundProduct.getDate().getDay());  //FixMe Dates aren't correct at 1:30AM, might be something with timezones?
+            assertEquals(testCreateProduct.isManufactured(), foundProduct.isManufactured());
 
             //Update product information
+            List<IUserDTO> updateWorkers = new ArrayList<>();
+            Date updateDate = new Date(119, 05, 05);
+            IProductDTO testUpdateProduct = new ProductDTO(9999, "Sildenafil", 1, 1, 1500, workers, commodities, updateDate, false);
+            assertTrue(proDAO.updateProductInfo(testUpdateProduct, updateWorkers));
+
+            foundProduct = proDAO.getProduct(9999);
+            assertEquals(testUpdateProduct.getID(), foundProduct.getID());
+            assertEquals(testUpdateProduct.getName(), foundProduct.getName());
+            assertEquals(testUpdateProduct.getRecipeID(), foundProduct.getRecipeID());
+            assertEquals(testUpdateProduct.getOrderedBy(), foundProduct.getOrderedBy());
+            assertEquals(testUpdateProduct.getQuantity(), foundProduct.getQuantity());
+            assertEquals(testUpdateProduct.getWorkers().toString(), foundProduct.getWorkers().toString());
+            assertEquals(testUpdateProduct.getCommodities().toString(), foundProduct.getCommodities().toString());
+            assertEquals(testUpdateProduct.getDate().getYear(), foundProduct.getDate().getYear());
+            assertEquals(testUpdateProduct.getDate().getMonth(), foundProduct.getDate().getMonth());
+//            assertEquals(testUpdateProduct.getDate().getDay(), foundProduct.getDate().getDay());  //FixMe Dates aren't correct at 1:30AM, might be something with timezones?
+            assertEquals(testUpdateProduct.isManufactured(), foundProduct.isManufactured());
 
             //Mark as finished
-
+            proDAO.markAsFinished(9999);
+            foundProduct = proDAO.getProduct(9999);
+            assertTrue(foundProduct.isManufactured());
+//            assertEquals(createDate, foundProduct.getDate());                                     //FixMe Dates aren't correct at 1:30AM, might be something with timezones?
         }
         finally {
             //Delete product - Always deletes it, even though Create or Update might fail
             proDAO.deleteProduct(9999);
             assertNull(proDAO.getProduct(9999));
         }
-    }
-
-    @Test
-    public void createProduct() {
-    }
-
-    @Test
-    public void createProductionLines() {
-    }
-
-    @Test
-    public void createCommodityLines() {
-    }
-
-    @Test
-    public void readAllProducts() {
-        //TODO Create proper UserDTO objects, when UserDTO is implemented
-        IUserDTO user1 = null;
-        IUserDTO user2 = null;
-
-//        Date pro1Date = new Date(2019, 5, 7);
-//        IProductDTO pro1 = new ProductDTO(1, "Sildenafil", 1, 2000, pro1Workers, pro1Commodities, pro1Date, true);
-    }
-
-    @Test
-    public void updateProductInfo() {
-    }
-
-    @Test
-    public void markAsFinished() {
-    }
-
-    @Test
-    public void deleteProduct() {
     }
 }

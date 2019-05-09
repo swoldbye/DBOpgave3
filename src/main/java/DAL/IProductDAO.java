@@ -16,7 +16,7 @@ public interface IProductDAO {
 //    void createCommodityLines(IProductDTO pro, Connection con) throws SQLException;
     List<IProductDTO> getAllProducts() throws DALException;         //Returns list of all products
     IProductDTO getProduct(int id) throws DALException;   //Returns a single Product
-    void updateProductInfo(IProductDTO pro, List<IUserDTO> oldUsers) throws DALException; //Update the information of a Product
+    boolean updateProductInfo(IProductDTO pro, List<IUserDTO> oldUsers) throws DALException; //Update the information of a Product
     void markAsFinished(int id) throws DALException;            //Mark production as finished //TODO implement in database
     void deleteProduct(int id) throws DALException;             //Delete
 }

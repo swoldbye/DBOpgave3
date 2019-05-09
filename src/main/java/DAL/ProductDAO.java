@@ -4,6 +4,7 @@ import DTO.*;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class ProductDAO implements IProductDAO {
@@ -37,6 +38,13 @@ public class ProductDAO implements IProductDAO {
             con.commit();
             return true;
         } catch (SQLException e) {
+            try {
+                if(con != null) {
+                    con.rollback();
+                }
+            } catch (SQLException e1) {
+                throw new DALException(e1.getMessage());
+            }
             throw new DALException(e.getMessage());
         } finally {
 //            try {
@@ -86,7 +94,6 @@ public class ProductDAO implements IProductDAO {
         List<IProductDTO> products = new ArrayList<>();
 
         try(Connection con = db.createConnection()) {
-//            ResultSet rsProducts = con.prepareStatement("SELECT product.*, recipe.recipe_name FROM product JOIN recipe ON product.recipe_id = recipe.recipe_id;").executeQuery();
             ResultSet rsProducts = con.prepareStatement("SELECT product.* FROM product").executeQuery();
 
             while(rsProducts.next()) {
@@ -97,7 +104,6 @@ public class ProductDAO implements IProductDAO {
 
                 IProductDTO product = new ProductDTO(
                         proID,                                                          //ID
-//                        rsProducts.getString(7),    //Name of product
                         recipeDAO.getRecipeName(rsProducts.getInt(2), con), //Name of product
                         rsProducts.getInt(2),                               //Recipe ID
                         rsProducts.getInt(3),                               //Orderers ID
@@ -108,7 +114,6 @@ public class ProductDAO implements IProductDAO {
                         rsProducts.getBoolean(6)                            //Manufactured
                 );
                 products.add(product);
-//                products.add(getProduct(rsProducts, con));
             }
 
         } catch (SQLException e) {
@@ -192,20 +197,36 @@ public class ProductDAO implements IProductDAO {
 
     //Update
     @Override
-    public void updateProductInfo(IProductDTO pro, List<IUserDTO> oldUsers) throws DALException {
-        try(Connection con = db.createConnection()) {
-            String query = "UPDATE product SET ordered_by = ?, recipe_id = ?, quantity = ?, production_date = ? WHERE batch_id = ?"; //TODO Put "finished_production = ?," into query when db updated
+    public boolean updateProductInfo(IProductDTO pro, List<IUserDTO> oldUsers) throws DALException {
+//        try(Connection con = db.createConnection()) {
+        Connection con = db.createConnection();
+        try {
+            db.toggleAutoCommit();
+            String query = "UPDATE product SET ordered_by = ?, quantity = ?, production_date = ?, manufactured = ? WHERE batch_id = ?"; //TODO Put "manufactured = ?," into query when db updated
             PreparedStatement preStatement = con.prepareStatement(query);
 
             preStatement.setInt(1, pro.getOrderedBy());
-            preStatement.setInt(2, pro.getRecipeID());
-            preStatement.setInt(3, pro.getQuantity());
-            preStatement.setDate(4, pro.getDate());
+            preStatement.setInt(2, pro.getQuantity());
+            preStatement.setDate(3, pro.getDate());
+            preStatement.setBoolean(4, pro.isManufactured());
+            preStatement.setInt(5, pro.getID());
             preStatement.execute();
             //Update workers
             updateLaborants(pro, oldUsers, con);
+            con.commit();
+            return true;
         } catch(SQLException e) {
+            try {
+                if(con != null) {
+                    con.rollback();
+                }
+            } catch (SQLException e1) {
+                throw new DALException(e1.getMessage());
+            }
             throw new DALException(e.getMessage());
+        } finally {
+            db.toggleAutoCommit();
+            db.killConnection();
         }
     }
 
@@ -238,7 +259,6 @@ public class ProductDAO implements IProductDAO {
             if(insertStatement != null) {
                 insertStatement.close(); //FixMe This is good practice, instead of waiting for garbage collector to come by
             }
-            con.setAutoCommit(true);
         }
     }
 
@@ -255,10 +275,13 @@ public class ProductDAO implements IProductDAO {
     @Override //TODO Should set date to current date aswell
     public void markAsFinished(int id) throws DALException {
         try(Connection con = db.createConnection()) {
-            String query = "UPDATE product SET manufactured = ? WHERE batch_id = ?";
+            String query = "UPDATE product SET production_date = ?, manufactured = ? WHERE batch_id = ?";
             PreparedStatement preStatement = con.prepareStatement(query);
-            preStatement.setBoolean(1, true);
-            preStatement.setInt(2, id);
+            Date currDate = new Date(Calendar.getInstance().getTime().getTime());
+            preStatement.setDate(1, currDate);
+            preStatement.setBoolean(2, true);
+            preStatement.setInt(3, id);
+            preStatement.executeUpdate();
         } catch(SQLException e) {
             throw new DALException(e.getMessage());
         }
