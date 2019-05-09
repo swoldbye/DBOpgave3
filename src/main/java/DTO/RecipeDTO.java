@@ -1,6 +1,8 @@
 package DTO;
 
 import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
 
 public class RecipeDTO implements IRecipeDTO{
 
@@ -8,8 +10,7 @@ public class RecipeDTO implements IRecipeDTO{
     private String recipe_name;
     private Date registration_date;
     private int storage_time;
-    private String ingredient_name; //from the ingredient table
-    private Double quantity; //from the ingredient_line table
+    private List<IIngredient_lineDTO> ingredient_line = new ArrayList<>();
 
     public RecipeDTO(){}
 
@@ -20,15 +21,6 @@ public class RecipeDTO implements IRecipeDTO{
         this.storage_time = storage_time;
     }
 
-    public RecipeDTO(int recipe_id, String recipe_name, Date registration_date, int storage_time,
-                     String ingredient_name, double quantity) {
-        this.recipe_id = recipe_id;
-        this.recipe_name = recipe_name;
-        this.registration_date = registration_date;
-        this.storage_time = storage_time;
-        this.ingredient_name = ingredient_name;
-        this.quantity = quantity;
-    }
 
     public int getRecipe_id() {
         return recipe_id;
@@ -64,31 +56,39 @@ public class RecipeDTO implements IRecipeDTO{
         this.storage_time = storage_time;
     }
 
-    public String getIngredient_name() {
-        return ingredient_name;
+    public List<IIngredient_lineDTO> getIngredient_line() {
+        return ingredient_line;
     }
 
-    public void setIngredient_name(String ingredient_name) {
-        this.ingredient_name = ingredient_name;
+    public void setIngredient_line(List<IIngredient_lineDTO> ingredient_line) {
+        this.ingredient_line = ingredient_line;
     }
 
-    public double getQuantity() {
-        return quantity;
+    public void addIngredient_line(IIngredient_lineDTO line){
+        this.ingredient_line.add(line);
     }
 
-    public void setQuantity(double quantity) {
-        this.quantity = quantity;
+    public boolean removeIngredient_line(IIngredient_lineDTO line){
+        return this.ingredient_line.remove(line);
     }
 
     @Override
     public String toString() {
-        return "RecipeDTO{" +
+        StringBuilder str = new StringBuilder();
+        String mainData = "RecipeDTO{" +
                 "recipe_id=" + recipe_id +
                 ", recipe_name='" + recipe_name + '\'' +
                 ", registration_date=" + registration_date +
-                ", storage_time=" + storage_time +
-                ", ingredient_name='" + ingredient_name + '\'' +
-                ", quantity=" + quantity +
-                '}';
+                ", storage_time=" + storage_time +'}';
+
+        str.append(mainData);
+
+        str.append("Ingredience; ");
+
+                for(int i = 0; i<ingredient_line.size();i++){
+                    str.append(" "+ ingredient_line.get(i).toString());
+                }
+
+                return str.toString();
     }
 }
