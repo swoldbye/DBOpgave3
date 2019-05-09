@@ -6,9 +6,9 @@ public interface ICommodityDTO {
 
     void setBatch_id(int batch_id);
 
-    int getIngrdient_id();
+    int getIngredient_id();
 
-    void setIngrdient_id(int ingrdient_id);
+    void setIngredient_id(int ingrdient_id);
 
     double getQuantity();
 
