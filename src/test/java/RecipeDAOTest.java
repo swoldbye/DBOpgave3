@@ -97,8 +97,6 @@ public class RecipeDAOTest{
         boolean Actual__isIngredient_lineEmpty = iRecipeDAO.controleIngredientLine(100);
         assertEquals(Expected_isIngredient_lineEmpty,Actual__isIngredient_lineEmpty);
 
-
-
     }
 
 
@@ -176,7 +174,7 @@ public class RecipeDAOTest{
     @org.junit.Test
     public void getAllRecipe() throws DALException{
 
-        List<IRecipeDTO> recipeList = new ArrayList<>();
+        List<IRecipeDTO> recipeList;
 
         recipeList = iRecipeDAO.getAllRecipes();
 
