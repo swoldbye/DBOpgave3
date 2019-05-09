@@ -1,13 +1,12 @@
-package DAL;
+package DTO;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Standard implementation of IUserDTO
  */
-public class UserDTO implements Serializable, DAL.IUserDTO {
+public class UserDTO implements Serializable, IUserDTO {
     //Fields
     private int	userId;
     private String userName;

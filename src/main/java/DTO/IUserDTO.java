@@ -1,4 +1,4 @@
-package DAL;
+package DTO;
 
 import java.util.List;
 

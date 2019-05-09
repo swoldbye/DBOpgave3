@@ -1,11 +1,10 @@
 package DAL;
 
-import com.sun.deploy.util.ArrayUtil;
+import DTO.IUserDTO;
+import DTO.UserDTO;
 
-import javax.xml.transform.Result;
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class UserDAO implements IUserDAO {
