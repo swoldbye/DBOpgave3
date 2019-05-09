@@ -46,4 +46,9 @@ public class IngridientDTO implements IIngridientDTO {
     public void setNeeds_refill(boolean needs_refill) {
         this.needs_refill = needs_refill;
     }
+
+    public String toString(){
+        String str = "ID: "+ingredient_id+", Name: "+ ingredient_name+", Needs refill: "+needs_refill;
+        return str;
+    }
 }
