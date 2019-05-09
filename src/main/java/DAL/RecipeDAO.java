@@ -14,7 +14,7 @@ public class RecipeDAO implements IRecipeDAO {
     DBConnection dbConnection = new DBConnection();
 
 
-    /**
+    /**Metoden opretter en recipe i tabellen Recipe. Opskriftens ingridienser oprettes i Ingredient_line tabellen.
      *
      * @param recipe
      * @throws DALException
@@ -31,9 +31,7 @@ public class RecipeDAO implements IRecipeDAO {
             statement.setInt(4,recipe.getStorage_time());
             statement.executeUpdate();
 
-
-            updateIngredient_line(recipe,connection);
-            /*
+            //Ingredient_line tabellen fyldes ud.
             for (IIngredient_lineDTO line: recipe.getIngredient_line()){
                 String query1 = "INSERT INTO ingredient_line VALUES(?,?,?)";
                 PreparedStatement preparedStatement = connection.prepareStatement(query1);
@@ -41,7 +39,7 @@ public class RecipeDAO implements IRecipeDAO {
                 preparedStatement.setInt(2,line.getIngredient_id());
                 preparedStatement.setDouble(3,line.getQuantity());
                 preparedStatement.executeUpdate();
-            }*/
+            }
         }
         catch(SQLException e){
             throw new DALException(e.getMessage());
@@ -49,9 +47,9 @@ public class RecipeDAO implements IRecipeDAO {
     }
 
     /**
-     *
+     * Metoden henter en enkelt recipe.
      * @param recipe_id
-     * @return
+     * @return IRecipeDTO objekt.
      * @throws DALException
      */
     public IRecipeDTO getRecipe(int recipe_id) throws DALException {
@@ -81,11 +79,7 @@ public class RecipeDAO implements IRecipeDAO {
 
             //Her indhentes de næste ingridienser til opskriften. (fra række to og ned)
             while (resultSet.next()){
-//                IIngredient_lineDTO ingridientLine = new Ingredient_lineDTO();
-//                ingridientLine.setIngredient_name(resultSet.getString(6));
-//                recipeDTO.getIngredient_line()
-                IIngredient_lineDTO ingredientLine = new Ingredient_lineDTO(resultSet.getDouble(5),
-                        resultSet.getString(6));
+                IIngredient_lineDTO ingredientLine = new Ingredient_lineDTO(resultSet.getDouble(5),resultSet.getString(6));
                 recipeDTO.addIngredient_line(ingredientLine);
 
             }return recipeDTO;
@@ -97,7 +91,8 @@ public class RecipeDAO implements IRecipeDAO {
     }
 
     /**
-     *
+     * Metoden henter alle recipes i databasen.
+     * Denne metode benytter også af metoden getRecipe().
      * @return
      * @throws DALException
      */
@@ -114,23 +109,11 @@ public class RecipeDAO implements IRecipeDAO {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             ResultSet resultSet = preparedStatement.executeQuery();
 
-
+            //Her findes det, hvor mange opskrifter der findes i tabellen ingredient_line.
             while (resultSet.next()) {
                 recipeId.add(resultSet.getInt(1));
-                /*
-                IRecipeDTO recipeDTO = new RecipeDTO();
-                recipeDTO.setRecipe_id(resultSet.getInt(1));
-                recipeDTO.setRecipe_name(resultSet.getString(2));
-                recipeDTO.setRegistration_date(resultSet.getDate(3));
-                recipeDTO.setStorage_time(resultSet.getInt(4));*/
-
-                /*while (resultSet.next()){
-                    IIngredient_lineDTO ingredientLine = new Ingredient_lineDTO(resultSet.getInt(5),
-                            resultSet.getString(6));
-                    recipeDTO.addIngredient_line(ingredientLine);
-                    recipes.add(recipeDTO);
-                }*/
             }
+            //Her hentes de opskrifter der findes i tabellen Ingredeint_line.
             for(int i = 0; i< recipeId.size(); i++){
 
                 IRecipeDTO one = getRecipe(recipeId.get(i));
@@ -143,6 +126,13 @@ public class RecipeDAO implements IRecipeDAO {
             throw new DALException(e.getMessage());
         }
     }
+
+    /**
+     * Metoden benytter sig af metoder deleteRecipe og createRecipe.
+     * @param oldRecipe_id
+     * @param recipe
+     * @throws DALException
+     */
 
     public void updateRecipe(int oldRecipe_id, IRecipeDTO recipe) throws DALException {
         Connection connection = null;
@@ -174,7 +164,7 @@ public class RecipeDAO implements IRecipeDAO {
         }
     }
 
-    /**
+    /**Metoden sletter en opskrift, ud fra dens id i tabellerne, recipe, Ingredient_line og Ingredient_recipe.
      *
      * @param recipe_id
      * @throws DALException
@@ -221,7 +211,20 @@ public class RecipeDAO implements IRecipeDAO {
         }
     }
 
+    //_______________________________________________________________________________________________________
 
+    //                          ET PAR ANVENDELIGE HJÆLPEMETODER
+
+    //________________________________________________________________________________________________________
+
+    /**
+     * Metode ser om der findes nogen tupler i tabellen Ingredient_line, med et recipe_id som parameter.
+     * Retunerer denne metode true betyder det at den er tom.
+     * Retunerer den false betyder det at der er noget i den.
+     * @param recipe_id
+     * @return Retunerer denne metode true betyder det at den er tom. Retunerer den false betyder det at der er noget i den.
+     * @throws DALException
+     */
     public boolean controleIngredientLine(int recipe_id) throws DALException{
 
         try(Connection connection = dbConnection.createConnection()) {
@@ -249,6 +252,14 @@ public class RecipeDAO implements IRecipeDAO {
         }
     }
 
+    /**
+     * Metode ser om der findes nogen tupler i tabellen shadowRecipe, med et recipe_id som parameter.
+     * Retunerer denne metode true betyder det at den er tom.
+     * Retunerer den false betyder det at der er noget i den.
+     * @param recipe_id
+     * @return Retunerer denne metode true betyder det at den er tom. Retunerer den false betyder det at der er noget i den.
+     * @throws DALException
+     */
     public boolean controleshadowRecipe(int recipe_id) throws DALException{
 
         try(Connection connection = dbConnection.createConnection()) {
@@ -275,14 +286,21 @@ public class RecipeDAO implements IRecipeDAO {
             throw new DALException(e.getMessage());
         }
     }
-
+    /**
+     * Metode ser om der findes nogen tupler i tabellen shadowIngredient_line, med et recipe_id som parameter.
+     * Retunerer denne metode true betyder det at den er tom.
+     * Retunerer den false betyder det at der er noget i den.
+     * @param recipe_id
+     * @return Retunerer denne metode true betyder det at den er tom. Retunerer den false betyder det at der er noget i den.
+     * @throws DALException
+     */
 
     public boolean controleshadowIngredient_line(int recipe_id) throws DALException{
 
         try(Connection connection = dbConnection.createConnection()) {
 
 
-            String query1 = "SELECT * FROM shadowRecipe WHERE recipe_id = ?";
+            String query1 = "SELECT * FROM shadowIngredient_line WHERE recipe_id = ?";
             PreparedStatement preparedStatement1 = connection.prepareStatement(query1);
             preparedStatement1.setInt(1, recipe_id);
             preparedStatement1.executeQuery();
@@ -303,6 +321,15 @@ public class RecipeDAO implements IRecipeDAO {
             throw new DALException(e.getMessage());
         }
     }
+
+    /**
+     * Metode ser om der findes nogen tupler i tabellen product_Recipe, med et recipe_id som parameter.
+     * Retunerer denne metode true betyder det at den er tom.
+     * Retunerer den false betyder det at der er noget i den.
+     * @param recipe_id
+     * @return Retunerer denne metode true betyder det at den er tom. Retunerer den false betyder det at der er noget i den.
+     * @throws DALException
+     */
 
     public boolean controleProduct_recipe(int recipe_id) throws DALException{
 
@@ -329,48 +356,5 @@ public class RecipeDAO implements IRecipeDAO {
         catch (SQLException e){
             throw new DALException(e.getMessage());
         }
-    }
-
-
-private static void updateIngredient_line(IRecipeDTO recipe, Connection connection) throws DALException{
-    try {
-
-        for (IIngredient_lineDTO line : recipe.getIngredient_line()) {
-            String query1 = "INSERT INTO ingredient_line VALUES(?,?,?)";
-            PreparedStatement preparedStatement = connection.prepareStatement(query1);
-            preparedStatement.setInt(1, recipe.getRecipe_id());
-            preparedStatement.setInt(2, line.getIngredient_id());
-            preparedStatement.setDouble(3, line.getQuantity());
-            preparedStatement.executeUpdate();
-        }
-    }catch (SQLException e){
-        throw new DALException(e.getMessage());
-    }
-}
-
-    public static void main(String[] args) throws DALException {
-        RecipeDAO hal = new RecipeDAO();
-        //IRecipeDTO one = hal.getRecipe(2);
-       // System.out.println(one.toString());
-
-       // System.out.println(hal.controleIngredientLine(2));
-       // hal.deleteRecipe(2);
-
-        //System.out.println(hal.controleIngredientLine(2));
-
-
-
-
-
-
-
-        List<IRecipeDTO> liste = hal.getAllRecipes();
-
-      for(int i = 0; i<liste.size();i++){
-          System.out.println(liste.get(i).toString());
-        }
-
-
-
     }
 }

@@ -17,6 +17,8 @@ public interface IRecipeDAO {
 
     void deleteRecipe(int recipe_id) throws DALException;
 
+    //Nedenforstående metoder kan flyttes, men de giver værdiful information.
+
     boolean controleIngredientLine(int recipe_id) throws DALException;
 
     boolean controleProduct_recipe(int recipe_id) throws DALException;
