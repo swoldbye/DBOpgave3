@@ -1,6 +1,6 @@
 package DAL;
 
-import DAL.IUserDTO;
+import DTO.IUserDTO;
 
 import java.util.List;
 

@@ -1,11 +1,12 @@
-package DAL;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.*;
-import DAL.UserDAO;
+
 import DAL.IUserDAO;
+import DAL.UserDAO;
+import DTO.IUserDTO;
+import DTO.UserDTO;
 
 public class UserDAOTest {
 
