@@ -71,7 +71,7 @@ public class ProductDAO implements IProductDAO {
         int proID = pro.getID();
 
         for(IUserDTO user : pro.getWorkers()) {
-            preStatement.setInt(1, user.getID());
+            preStatement.setInt(1, user.getUserId());
             preStatement.setInt(2, proID);
             preStatement.executeUpdate();
         }
@@ -160,19 +160,23 @@ public class ProductDAO implements IProductDAO {
         return product;
     }
 
-    private List<IUserDTO> getProductWorkers(int productID, Connection con) throws SQLException {
-        IUserDAO userDAO = new UserDAO();
-        List<IUserDTO> users = new ArrayList<>();
+    private List<IUserDTO> getProductWorkers(int productID, Connection con) throws DALException {
+        try {
+            IUserDAO userDAO = new UserDAO();
+            List<IUserDTO> users = new ArrayList<>();
 
-        PreparedStatement preStatement = con.prepareStatement("SELECT laborant_id FROM production WHERE product_id = ?");
-        preStatement.setInt(1, productID);
-        ResultSet rsUsers = preStatement.executeQuery();
+            PreparedStatement preStatement = con.prepareStatement("SELECT laborant_id FROM production WHERE product_id = ?");
+            preStatement.setInt(1, productID);
+            ResultSet rsUsers = preStatement.executeQuery();
 
-        while(rsUsers.next()) {
-            IUserDTO user = userDAO.getUser(rsUsers.getInt(1));
-            users.add(user);
+            while(rsUsers.next()) {
+                IUserDTO user = userDAO.getUser(rsUsers.getInt(1));
+                users.add(user);
+            }
+            return users;
+        } catch (SQLException e) {
+            throw new DALException(e.getMessage());
         }
-        return users;
     }
 
     private List<ICommodityDTO> getProductCommodities(int productID, Connection con) throws DALException {
@@ -264,7 +268,7 @@ public class ProductDAO implements IProductDAO {
 
     private void updateProductionLines(PreparedStatement statement, int proID, List<IUserDTO> users, Connection con) throws SQLException {
         for(IUserDTO user : users) {
-            statement.setInt(1, user.getID());
+            statement.setInt(1, user.getUserId());
             statement.setInt(2, proID);
             statement.execute();
             statement.executeUpdate();

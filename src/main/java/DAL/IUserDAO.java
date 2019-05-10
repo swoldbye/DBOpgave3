@@ -25,23 +25,6 @@ public interface IUserDAO {
     void updateRoll(String oldRole, String newRole) throws DALException;
 
 
-    //helper function
+    //helper function   //FixMe Should this be in the interface if only a helper function?
     boolean contains(String s, List<String> array);
-
-
-
-    public class DALException extends Exception {
-        //Til Java serialisering...
-        private static final long serialVersionUID = 7355418246336739229L;
-
-        public DALException(String msg, Throwable e) {
-            super(msg,e);
-        }
-
-        public DALException(String msg) {
-            super(msg);
-        }
-
-    }
-
 }
