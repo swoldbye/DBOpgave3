@@ -84,27 +84,28 @@ public class RecipeDAOTest{
     @org.junit.Test
     public void createRecipe() throws DALException{
         clearTest(103);
-        Date date = new Date(22,5,2018);
-        //iRecipeDAO.deleteRecipe(100);
-        IRecipeDTO newRecipe = new RecipeDTO(103,"DenNyeOpskrift",date,80);
-        IIngredient_lineDTO ingredient1 = new Ingredient_lineDTO(1,10,"Sildenafil");
-        IIngredient_lineDTO ingredient2 = new Ingredient_lineDTO(4,10,"Magnesiumstearat");
+        try {
+            Date date = new Date(22,5,2018);
+            //iRecipeDAO.deleteRecipe(100);
+            IRecipeDTO newRecipe = new RecipeDTO(103,"DenNyeOpskrift",date,80);
+            IIngredient_lineDTO ingredient1 = new Ingredient_lineDTO(1,10,"Sildenafil");
+            IIngredient_lineDTO ingredient2 = new Ingredient_lineDTO(4,10,"Magnesiumstearat");
 
-        newRecipe.addIngredient_line(ingredient1);
-        newRecipe.addIngredient_line(ingredient2);
+            newRecipe.addIngredient_line(ingredient1);
+            newRecipe.addIngredient_line(ingredient2);
 
-        iRecipeDAO.createRecipe(newRecipe);
-        IRecipeDTO recipeFromDatabase = iRecipeDAO.getRecipe(103);
+            iRecipeDAO.createRecipe(newRecipe);
+            IRecipeDTO recipeFromDatabase = iRecipeDAO.getRecipe(103);
 
-        assertEquals(newRecipe.toString(),recipeFromDatabase.toString());
+            assertEquals(newRecipe.toString(),recipeFromDatabase.toString());
 
-        //Her testes det om ingredient_line tabellen bliver udfyldt. (False betyder at der er noget i tabellen, med det angivne id.
-        boolean Expected_isIngredient_lineEmpty = false;
-        boolean Actual__isIngredient_lineEmpty = iRecipeDAO.controleIngredientLine(103);
-        assertEquals(Expected_isIngredient_lineEmpty,Actual__isIngredient_lineEmpty);
-
-        clearTest(103);
-
+            //Her testes det om ingredient_line tabellen bliver udfyldt. (False betyder at der er noget i tabellen, med det angivne id.
+            boolean Expected_isIngredient_lineEmpty = false;
+            boolean Actual__isIngredient_lineEmpty = iRecipeDAO.controleIngredientLine(103);
+            assertEquals(Expected_isIngredient_lineEmpty,Actual__isIngredient_lineEmpty);
+        } finally {
+            clearTest(103);
+        }
     }
 
 
@@ -123,47 +124,49 @@ public class RecipeDAOTest{
 
     @org.junit.Test
     public void deleteRecipe() throws DALException{
-        iRecipeDAO.deleteRecipe(100);
-        Date date = new Date(22,5,2018);
-        IRecipeDTO newRecipe = new RecipeDTO(100,"DenNyeOpskrift",date,80);
-        IIngredient_lineDTO ingredient1 = new Ingredient_lineDTO(1,10,"Sildenafil");
+        try {
+            iRecipeDAO.deleteRecipe(100);
+            Date date = new Date(22,5,2018);
+            IRecipeDTO newRecipe = new RecipeDTO(100,"DenNyeOpskrift",date,80);
+            IIngredient_lineDTO ingredient1 = new Ingredient_lineDTO(1,10,"Sildenafil");
 
-        newRecipe.addIngredient_line(ingredient1);
+            newRecipe.addIngredient_line(ingredient1);
 
-        iRecipeDAO.createRecipe(newRecipe);
-        iRecipeDAO.deleteRecipe(100);
+            iRecipeDAO.createRecipe(newRecipe);
+            iRecipeDAO.deleteRecipe(100);
 
-        //Her testes det om alle tabellerne bliver opdateret.
-        boolean Expected_isIngredient_lineEmpty = true;
-        boolean Actual__isIngredient_lineEmpty = iRecipeDAO.controleIngredientLine(100);
+            //Her testes det om alle tabellerne bliver opdateret.
+            boolean Expected_isIngredient_lineEmpty = true;
+            boolean Actual__isIngredient_lineEmpty = iRecipeDAO.controleIngredientLine(100);
 
-        boolean Expected_isProduct_recipeEmpty = true;
-        boolean Actual__isProduct_recipeEmpty = iRecipeDAO.controleProduct_recipe(100);
+            boolean Expected_isProduct_recipeEmpty = true;
+            boolean Actual__isProduct_recipeEmpty = iRecipeDAO.controleProduct_recipe(100);
 
-        boolean Expected_isShadowRecipeeFull = false;
-        boolean Actual__isShadowRecipeFull = iRecipeDAO.controleshadowRecipe(100);
+            boolean Expected_isShadowRecipeeFull = false;
+            boolean Actual__isShadowRecipeFull = iRecipeDAO.controleshadowRecipe(100);
 
-        boolean Expected_isShadowIngredient_lineFull = false;
-        boolean Actual__isShadowIngredient_lineFull = iRecipeDAO.controleshadowIngredient_line(100);
+            boolean Expected_isShadowIngredient_lineFull = false;
+            boolean Actual__isShadowIngredient_lineFull = iRecipeDAO.controleshadowIngredient_line(100);
 
-        assertEquals(Expected_isIngredient_lineEmpty,Actual__isIngredient_lineEmpty);
-        assertEquals(Expected_isProduct_recipeEmpty,Actual__isProduct_recipeEmpty);
-        assertEquals(Expected_isShadowRecipeeFull,Actual__isShadowRecipeFull);
-        assertEquals(Expected_isShadowIngredient_lineFull,Actual__isShadowIngredient_lineFull);
+            assertEquals(Expected_isIngredient_lineEmpty,Actual__isIngredient_lineEmpty);
+            assertEquals(Expected_isProduct_recipeEmpty,Actual__isProduct_recipeEmpty);
+            assertEquals(Expected_isShadowRecipeeFull,Actual__isShadowRecipeFull);
+            assertEquals(Expected_isShadowIngredient_lineFull,Actual__isShadowIngredient_lineFull);
 
 
-        List<IRecipeDTO> AllRecipes = iRecipeDAO.getAllRecipes();
-        boolean found = false;
+            List<IRecipeDTO> AllRecipes = iRecipeDAO.getAllRecipes();
+            boolean found = false;
             for (IRecipeDTO recipe: AllRecipes){
                 if (recipe.getRecipe_id() == newRecipe.getRecipe_id()){
                     found = true;
                 }
             }
-        if (found){
-            fail();
+            if (found){
+                fail();
+            }
+        } finally {
+            clearTest(100);
         }
-
-        clearTest(100);
     }
 
     /**
@@ -183,39 +186,40 @@ public class RecipeDAOTest{
 
     @org.junit.Test
     public void getAllRecipe() throws DALException{
-        clearTest(300);
+        try {
+            clearTest(300);
 
-        List<IRecipeDTO> recipeList;
+            List<IRecipeDTO> recipeList;
 
-        recipeList = iRecipeDAO.getAllRecipes();
+            recipeList = iRecipeDAO.getAllRecipes();
 
 
         /*Det faktiske antal af række i tabellen.
         Bemærk at der kan være indsat flere recipes recipes fra da denne tast blev lavet.
          Dermed kan expectedRecipes2 og expectedRecipes2 godt ændre sig.*/
-        int expectedRecipes = 2 ;
-        int actualNumberOfRecipes = recipeList.size();
+            int expectedRecipes = 2 ;
+            int actualNumberOfRecipes = recipeList.size();
 
 
-        assertEquals(expectedRecipes,actualNumberOfRecipes);
+            assertEquals(expectedRecipes,actualNumberOfRecipes);
 
-        // Lægger vi en opskrift ned i databasen så der findes en opskrift mere.
-        //Vi henter en ny liste med getRecipe og ser antallet passer.
-        Date date = new Date(22,5,2018);
-        IRecipeDTO newRecipe = new RecipeDTO(300,"DenNyeOpskrift",date,80);
-        IIngredient_lineDTO ingredient1 = new Ingredient_lineDTO(1,10,"Sildenafil");
-        newRecipe.addIngredient_line(ingredient1);
+            // Lægger vi en opskrift ned i databasen så der findes en opskrift mere.
+            //Vi henter en ny liste med getRecipe og ser antallet passer.
+            Date date = new Date(22,5,2018);
+            IRecipeDTO newRecipe = new RecipeDTO(300,"DenNyeOpskrift",date,80);
+            IIngredient_lineDTO ingredient1 = new Ingredient_lineDTO(1,10,"Sildenafil");
+            newRecipe.addIngredient_line(ingredient1);
 
-        iRecipeDAO.createRecipe(newRecipe);
-        recipeList = iRecipeDAO.getAllRecipes();
+            iRecipeDAO.createRecipe(newRecipe);
+            recipeList = iRecipeDAO.getAllRecipes();
 
-        int expectedRecipes2 = 3;
-        actualNumberOfRecipes = recipeList.size();
+            int expectedRecipes2 = 3;
+            actualNumberOfRecipes = recipeList.size();
 
-        assertEquals(expectedRecipes2,actualNumberOfRecipes);
-
-        clearTest(300);
-
+            assertEquals(expectedRecipes2,actualNumberOfRecipes);
+        } finally {
+            clearTest(300);
+        }
     }
 
     /**
@@ -226,30 +230,33 @@ public class RecipeDAOTest{
 
     @org.junit.Test
     public void updateRecipe() throws DALException{
-        Date date = new Date(22,5,2018);
-        IRecipeDTO oldRecipe = new RecipeDTO(200,"Opskrift",date,80);
-        IIngredient_lineDTO ingredient1 = new Ingredient_lineDTO(1,10,"Sildenafil");
-        oldRecipe.addIngredient_line(ingredient1);
+        try {
+            clearTest(200);
+            clearTest(201);
+            Date date = new Date(22,5,2018);
+            IRecipeDTO oldRecipe = new RecipeDTO(200,"Opskrift",date,80);
+            IIngredient_lineDTO ingredient1 = new Ingredient_lineDTO(1,10,"Sildenafil");
+            oldRecipe.addIngredient_line(ingredient1);
 
-        IRecipeDTO newRecipe = new RecipeDTO(201,"EnEndnuNyererOpskrift",date,80);
-        IIngredient_lineDTO ingredient = new Ingredient_lineDTO(1,10,"Sildenafil");
-        newRecipe.addIngredient_line(ingredient);
+            IRecipeDTO newRecipe = new RecipeDTO(201,"EnEndnuNyererOpskrift",date,80);
+            IIngredient_lineDTO ingredient = new Ingredient_lineDTO(1,10,"Sildenafil");
+            newRecipe.addIngredient_line(ingredient);
 
-        iRecipeDAO.updateRecipe(newRecipe.getRecipe_id(),newRecipe);
+            iRecipeDAO.createRecipe(oldRecipe);
+            iRecipeDAO.updateRecipe(oldRecipe.getRecipe_id(),newRecipe);
 
-        boolean Expected_isIngredient_lineEmpty = true;
-        boolean Actual__isIngredient_lineEmpty = iRecipeDAO.controleIngredientLine(200);
+            boolean Expected_isIngredient_lineEmpty = true;
+            boolean Actual__isIngredient_lineEmpty = iRecipeDAO.controleIngredientLine(200);
 
-        boolean Expected_isProduct_recipeFull = false;
-        boolean Actual__isProduct_recipeFull = iRecipeDAO.controleIngredientLine(201);
+            boolean Expected_isProduct_recipeFull = false;
+            boolean Actual__isProduct_recipeFull = iRecipeDAO.controleIngredientLine(201);
 
-        assertEquals(Expected_isIngredient_lineEmpty,Actual__isIngredient_lineEmpty);
-        assertEquals(Expected_isProduct_recipeFull,Actual__isProduct_recipeFull);
-
-
-        clearTest(200);
-        clearTest(201);
-
+            assertEquals(Expected_isIngredient_lineEmpty,Actual__isIngredient_lineEmpty);
+            assertEquals(Expected_isProduct_recipeFull,Actual__isProduct_recipeFull);
+        } finally {
+            clearTest(200);
+            clearTest(201);
+        }
     }
 
 

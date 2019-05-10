@@ -3,6 +3,7 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
+import DAL.DALException;
 import DAL.IUserDAO;
 import DAL.UserDAO;
 import DTO.IUserDTO;
@@ -109,7 +110,7 @@ public class UserDAOTest {
             }
             userDAO.deleteUser(52);
 
-        } catch (IUserDAO.DALException e) {
+        } catch (DALException e) {
             e.printStackTrace();
             fail();
         }

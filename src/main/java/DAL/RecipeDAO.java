@@ -17,9 +17,8 @@ public class RecipeDAO implements IRecipeDAO {
      * @throws DALException
      */
     public void createRecipe(IRecipeDTO recipe) throws DALException {
-
-        try(Connection connection = dbConnection.createConnection()){
-
+        Connection connection = dbConnection.createConnection();
+        try{
             String query = "INSERT INTO recipe VALUES(?, ?, DATE ?, ?)";
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setInt(1, recipe.getRecipe_id());
@@ -156,7 +155,7 @@ public class RecipeDAO implements IRecipeDAO {
             connection = dbConnection.createConnection();
             connection.setAutoCommit(false);
 
-            deleteRecipe(oldRecipe_id);
+            deleteRecipeStatement(oldRecipe_id, connection);
             createRecipe(recipe);
 
             connection.commit();
@@ -191,21 +190,7 @@ public class RecipeDAO implements IRecipeDAO {
             connection = dbConnection.createConnection();
             connection.setAutoCommit(false);
 
-            String queryIngredient_line = "DELETE FROM ingredient_line WHERE recipe_id = ?";
-            PreparedStatement preparedStatement2 = connection.prepareStatement(queryIngredient_line);
-            preparedStatement2.setInt(1,recipe_id);
-            preparedStatement2.executeUpdate();
-
-            String queryProduct_racipe = "DELETE FROM product_recipe WHERE recipe_id = ?";
-            PreparedStatement preparedStatement3 = connection.prepareStatement(queryProduct_racipe);
-            preparedStatement3.setInt(1,recipe_id);
-            preparedStatement3.executeUpdate();
-
-            String query = "DELETE FROM recipe WHERE recipe_id = ?";
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setInt(1,recipe_id);
-            preparedStatement.executeUpdate();
-
+            deleteRecipeStatement(recipe_id, connection);
 
             connection.commit();
         }
@@ -225,6 +210,23 @@ public class RecipeDAO implements IRecipeDAO {
                 throw new DALException(e.getMessage());
             }
         }
+    }
+
+    private void deleteRecipeStatement(int recipe_id, Connection connection) throws SQLException {
+        String queryIngredient_line = "DELETE FROM ingredient_line WHERE recipe_id = ?";
+        PreparedStatement preparedStatement2 = connection.prepareStatement(queryIngredient_line);
+        preparedStatement2.setInt(1,recipe_id);
+        preparedStatement2.executeUpdate();
+
+        String queryProduct_racipe = "DELETE FROM product_recipe WHERE recipe_id = ?";
+        PreparedStatement preparedStatement3 = connection.prepareStatement(queryProduct_racipe);
+        preparedStatement3.setInt(1,recipe_id);
+        preparedStatement3.executeUpdate();
+
+        String query = "DELETE FROM recipe WHERE recipe_id = ?";
+        PreparedStatement preparedStatement = connection.prepareStatement(query);
+        preparedStatement.setInt(1,recipe_id);
+        preparedStatement.executeUpdate();
     }
 
     //_______________________________________________________________________________________________________
