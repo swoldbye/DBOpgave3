@@ -17,7 +17,12 @@ public class UserDAO implements IUserDAO {
         return DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
     }
 
-
+    /**
+     * Creates a user in 'users' with foreign key to 'user_role'. However needs roles to exist
+     * in 'roles'.
+     * @param user
+     * @throws DALException
+     */
     public void createUser(IUserDTO user) throws DALException {
 
         try (Connection conn = createConnection()) {
@@ -48,6 +53,13 @@ public class UserDAO implements IUserDAO {
 
     }
 
+    /**
+     * Returns a UserDTO holding a user from the database. Needs the user_id to exist in
+     * 'users' and 'user_id'.
+     * @param userId
+     * @return
+     * @throws DALException
+     */
     public IUserDTO getUser(int userId) throws DALException {
 
         try (Connection conn = createConnection()) {
@@ -83,6 +95,11 @@ public class UserDAO implements IUserDAO {
 
     }
 
+    /**
+     * Returns an list of UserDTOs.
+     * @return
+     * @throws DALException
+     */
     public List<IUserDTO> getUserList() throws DALException {
 
 
@@ -106,6 +123,12 @@ public class UserDAO implements IUserDAO {
         return null;
     }
 
+    /**
+     * Takes a user, finds it in the database, and updates/deletes where necessary
+     * for the new user in the database to be idendentical to the param user.
+     * @param user
+     * @throws DALException
+     */
     public void updateUser(IUserDTO user) throws DALException {
         try (Connection conn = createConnection()) {
 
@@ -171,6 +194,11 @@ public class UserDAO implements IUserDAO {
         }
     }
 
+    /**
+     * Removes user from everywhere in database: 'user' and 'user_role'.
+     * @param userId
+     * @throws DALException
+     */
     public void deleteUser(int userId) throws DALException {
 
         try (Connection c = createConnection()) {
@@ -193,6 +221,12 @@ public class UserDAO implements IUserDAO {
         }
     }
 
+    /**
+     * helper function to conclude if s is in the string-Array 'array'
+     * @param s
+     * @param array
+     * @return
+     */
     public boolean contains(String s, List<String> array) {
         for (String e : array) {
             if (e.equals(s)) {
@@ -202,6 +236,12 @@ public class UserDAO implements IUserDAO {
         return false;
     }
 
+    /**
+     * creates a role for 'roles' table using given name and id.
+     * @param roll
+     * @param id
+     * @throws DALException
+     */
     public void createRoll(String roll, int id) throws DALException {
         try (Connection c = createConnection()) {
 
@@ -216,7 +256,11 @@ public class UserDAO implements IUserDAO {
         }
     }
 
-    //Delete
+    /**
+     * removes role from everywhere necessary in database: 'user_role' and 'roles'.
+      * @param roll
+     * @throws DALException
+     */
     public void deleteRoll(String roll) throws DALException {
 
         try (Connection c = createConnection()) {
@@ -238,7 +282,11 @@ public class UserDAO implements IUserDAO {
         }
     }
 
-    //Read
+    /**
+     * Returns a list of all roles currenctly in the 'roles' table.
+     * @return
+     * @throws DALException
+     */
     public List<String> getRollList() throws DALException {
         try (Connection c = createConnection()) {
 
@@ -261,7 +309,13 @@ public class UserDAO implements IUserDAO {
         return null;
     }
 
-    //Update
+    /**
+     *Takes the name of current role in 'roles' table (oldRole) , and renames it (newRole).
+     * Also replaces all occurrences of oldRole in 'user_role' table with newRole.
+     * @param oldRole
+     * @param newRole
+     * @throws DALException
+     */
     public void updateRoll(String oldRole, String newRole) throws DALException {
         try (Connection c = createConnection()) {
             String query = "UPDATE roles SET role_name = ? WHERE role_name = ?";
