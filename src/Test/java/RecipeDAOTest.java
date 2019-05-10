@@ -4,13 +4,18 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import DAL.DALException;
+import DAL.DBConnection;
 import DAL.IRecipeDAO;
 import DAL.RecipeDAO;
 import DTO.IIngredient_lineDTO;
 import DTO.IRecipeDTO;
 import DTO.Ingredient_lineDTO;
 import DTO.RecipeDTO;
+
+import java.sql.Connection;
 import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -78,6 +83,7 @@ public class RecipeDAOTest{
 
     @org.junit.Test
     public void createRecipe() throws DALException{
+        clearTest(103);
         Date date = new Date(22,5,2018);
         //iRecipeDAO.deleteRecipe(100);
         IRecipeDTO newRecipe = new RecipeDTO(103,"DenNyeOpskrift",date,80);
@@ -94,8 +100,10 @@ public class RecipeDAOTest{
 
         //Her testes det om ingredient_line tabellen bliver udfyldt. (False betyder at der er noget i tabellen, med det angivne id.
         boolean Expected_isIngredient_lineEmpty = false;
-        boolean Actual__isIngredient_lineEmpty = iRecipeDAO.controleIngredientLine(100);
+        boolean Actual__isIngredient_lineEmpty = iRecipeDAO.controleIngredientLine(103);
         assertEquals(Expected_isIngredient_lineEmpty,Actual__isIngredient_lineEmpty);
+
+        clearTest(103);
 
     }
 
@@ -154,6 +162,8 @@ public class RecipeDAOTest{
         if (found){
             fail();
         }
+
+        clearTest(100);
     }
 
     /**
@@ -173,6 +183,7 @@ public class RecipeDAOTest{
 
     @org.junit.Test
     public void getAllRecipe() throws DALException{
+        clearTest(300);
 
         List<IRecipeDTO> recipeList;
 
@@ -182,7 +193,7 @@ public class RecipeDAOTest{
         /*Det faktiske antal af række i tabellen.
         Bemærk at der kan være indsat flere recipes recipes fra da denne tast blev lavet.
          Dermed kan expectedRecipes2 og expectedRecipes2 godt ændre sig.*/
-        int expectedRecipes = 3 ;
+        int expectedRecipes = 2 ;
         int actualNumberOfRecipes = recipeList.size();
 
 
@@ -198,15 +209,17 @@ public class RecipeDAOTest{
         iRecipeDAO.createRecipe(newRecipe);
         recipeList = iRecipeDAO.getAllRecipes();
 
-        int expectedRecipes2 = 4;
+        int expectedRecipes2 = 3;
         actualNumberOfRecipes = recipeList.size();
 
         assertEquals(expectedRecipes2,actualNumberOfRecipes);
 
+        clearTest(300);
+
     }
 
     /**
-     * Metoden er en
+     * Terser at man kan updatere en recipe.
      * @throws DALException
      */
 
@@ -233,6 +246,58 @@ public class RecipeDAOTest{
         assertEquals(Expected_isIngredient_lineEmpty,Actual__isIngredient_lineEmpty);
         assertEquals(Expected_isProduct_recipeFull,Actual__isProduct_recipeFull);
 
+
+        clearTest(200);
+        clearTest(201);
+
     }
+
+
+    public void clearTest(int recipe_id) throws DALException {
+        DBConnection dbConnection = new DBConnection();
+        Connection connection = null;
+        try {
+            connection = dbConnection.createConnection();
+            //connection.setAutoCommit(false);
+
+            String queryShadowRecipe = "DELETE FROM shadowRecipe WHERE recipe_id = ?";
+            PreparedStatement preparedStatement = connection.prepareStatement(queryShadowRecipe);
+            preparedStatement.setInt(1, recipe_id);
+            preparedStatement.executeUpdate();
+
+            String queryShadowIngredient_line = "DELETE FROM shadowIngredient_line WHERE recipe_id = ?";
+            PreparedStatement preparedStatement1 = connection.prepareStatement(queryShadowIngredient_line);
+            preparedStatement1.setInt(1, recipe_id);
+            preparedStatement1.executeUpdate();
+
+            String queryRecipe = "DELETE FROM recipe WHERE recipe_id = ?";
+            PreparedStatement preparedStatement2 = connection.prepareStatement(queryRecipe);
+            preparedStatement2.setInt(1, recipe_id);
+            preparedStatement2.executeUpdate();
+
+            String queryIngredient_line = "DELETE FROM ingredient_line WHERE recipe_id = ?";
+            PreparedStatement preparedStatement3 = connection.prepareStatement(queryIngredient_line);
+            preparedStatement3.setInt(1, recipe_id);
+            preparedStatement3.executeUpdate();
+
+            String queryShadowIngredientLine = "DELETE FROM shadowIngredient_line WHERE recipe_id = ?";
+            PreparedStatement preparedStatement4 = connection.prepareStatement(queryShadowIngredientLine);
+            preparedStatement4.setInt(1, recipe_id);
+            preparedStatement4.executeUpdate();
+
+            String query = "DELETE FROM shadowRecipe WHERE recipe_id = ?";
+            PreparedStatement preparedStatement5 = connection.prepareStatement(query);
+            preparedStatement5.setInt(1, recipe_id);
+            preparedStatement5.executeUpdate();
+
+            connection.close();
+            // connection.commit();
+        } catch (SQLException e) {
+            throw new DALException(e.getMessage());
+
+        }
+    }
+
+
 
 }
