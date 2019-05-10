@@ -5,7 +5,7 @@ import java.io.Serializable;
 public class CommodityDTO implements Serializable, ICommodityDTO {
 
     private int batch_id;
-    private int ingrdient_id;
+    private int ingredient_id;
     private double quantity;
     private boolean is_leftover;
     private String commodity_manufacturer;
@@ -13,18 +13,18 @@ public class CommodityDTO implements Serializable, ICommodityDTO {
 
     public CommodityDTO(){}
 
-    public CommodityDTO(int batch_id, int ingrdient_id, double quantity, boolean is_leftover, String commodity_manufacturer) {
+    public CommodityDTO(int batch_id, int ingredient_id, double quantity, boolean is_leftover, String commodity_manufacturer) {
         this.batch_id = batch_id;
-        this.ingrdient_id = ingrdient_id;
+        this.ingredient_id = ingredient_id;
         this.quantity = quantity;
         this.is_leftover = is_leftover;
         this.commodity_manufacturer = commodity_manufacturer;
     }
 
-    public CommodityDTO(int batch_id, int ingrdient_id, double quantity, boolean is_leftover,
+    public CommodityDTO(int batch_id, int ingredient_id, double quantity, boolean is_leftover,
                         String commodity_manufacturer, String ingredient_name) {
         this.batch_id = batch_id;
-        this.ingrdient_id = ingrdient_id;
+        this.ingredient_id = ingredient_id;
         this.quantity = quantity;
         this.is_leftover = is_leftover;
         this.commodity_manufacturer = commodity_manufacturer;
@@ -39,12 +39,12 @@ public class CommodityDTO implements Serializable, ICommodityDTO {
         this.batch_id = batch_id;
     }
 
-    public int getIngrdient_id() {
-        return ingrdient_id;
+    public int getIngredient_id() {
+        return ingredient_id;
     }
 
-    public void setIngrdient_id(int ingrdient_id) {
-        this.ingrdient_id = ingrdient_id;
+    public void setIngredient_id(int ingrdient_id) {
+        this.ingredient_id = ingrdient_id;
     }
 
     public double getQuantity() {
@@ -83,7 +83,7 @@ public class CommodityDTO implements Serializable, ICommodityDTO {
     public String toString() {
         return "CommodityDTO{" +
                 "batch_id=" + batch_id +
-                ", ingrdient_id=" + ingrdient_id +
+                ", ingrdient_id=" + ingredient_id +
                 ", quantity=" + quantity +
                 ", is_leftover=" + is_leftover +
                 ", commodity_manufacturer='" + commodity_manufacturer + '\'' +
