@@ -20,8 +20,16 @@ public class ProductDAOTest {
         try {
             //Create a product
             List<IUserDTO> workers = new ArrayList<>();
-//        workers.add(null);  //FixMe Add when UserDTO is added
-//        workers.add(null);  //FixMe Add when UserDTO is added
+            //
+            List<String> roles1 = new ArrayList<>();
+            roles1.add("Laborant");
+            roles1.add("Administrator");
+            workers.add(new UserDTO(1, "Claes Lindhardt", "CLI", roles1, "123456098"));
+            List<String> roles2 = new ArrayList<>();
+            roles2.add("Laborant");
+            roles2.add("Pharmaceut");
+            workers.add(new UserDTO(2, "Andreas Jensen", "AGJ", roles2, "1425369708"));
+            //
             List<ICommodityDTO> commodities = new ArrayList<>();
             commodities.add(new CommodityDTO(1, 1, 100, false, "Dealer", "Sildenafil"));
             commodities.add(new CommodityDTO(2, 2, 100, false, "Dealer", "Calciumhydrogenphosphat dihydrat"));
@@ -46,9 +54,14 @@ public class ProductDAOTest {
 
             //Update product information
             List<IUserDTO> updateWorkers = new ArrayList<>();
+            List<String> roles3 = new ArrayList<>();
+            roles3.add("Laborant");
+            roles3.add("Pharmaceut");
+            updateWorkers.add(new UserDTO(2, "Andreas Jensen", "AGJ", roles2, "1425369708"));
+            updateWorkers.add(new UserDTO(3, "Jacob Jensen", "JRJ", roles3, "1111112222"));
             Date updateDate = new Date(119, 05, 05);
-            IProductDTO testUpdateProduct = new ProductDTO(9999, "Sildenafil", 1, 1, 1500, workers, commodities, updateDate, false);
-            assertTrue(proDAO.updateProductInfo(testUpdateProduct, updateWorkers));
+            IProductDTO testUpdateProduct = new ProductDTO(9999, "Sildenafil", 1, 1, 1500, updateWorkers, commodities, updateDate, false);
+            assertTrue(proDAO.updateProductInfo(testUpdateProduct, workers));
 
             foundProduct = proDAO.getProduct(9999);
             assertEquals(testUpdateProduct.getID(), foundProduct.getID());
@@ -56,7 +69,7 @@ public class ProductDAOTest {
             assertEquals(testUpdateProduct.getRecipeID(), foundProduct.getRecipeID());
             assertEquals(testUpdateProduct.getOrderedBy(), foundProduct.getOrderedBy());
             assertEquals(testUpdateProduct.getQuantity(), foundProduct.getQuantity());
-            assertEquals(testUpdateProduct.getWorkers().toString(), foundProduct.getWorkers().toString());
+            assertEquals(testUpdateProduct.getWorkers().toString(), foundProduct.getWorkers().toString());  //FixMe Technically fails if workers aren't in the right order
             assertEquals(testUpdateProduct.getCommodities().toString(), foundProduct.getCommodities().toString());
             assertEquals(testUpdateProduct.getDate().getYear(), foundProduct.getDate().getYear());
             assertEquals(testUpdateProduct.getDate().getMonth(), foundProduct.getDate().getMonth());
