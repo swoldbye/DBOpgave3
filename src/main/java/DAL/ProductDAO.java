@@ -11,23 +11,27 @@ public class ProductDAO implements IProductDAO {
     private DBConnection db = new DBConnection();
 
     //Create
-    @Override   //TODO ACID
+
+    /**
+     * Inserts product information into the database
+     *
+     * @param pro   Instance of ProductDTO
+     * @return      True if product has been inserted into database, else false
+     * @throws      DALException
+     */
+    @Override
     public boolean createProduct(IProductDTO pro) throws DALException {
-//        try(Connection con = db.createConnection()) {
         Connection con = db.createConnection();
         try {
-//            con.setAutoCommit(false);
-            db.toggleAutoCommit();
+            db.toggleAutoCommit(false);
             String query = "INSERT INTO product VALUES(?, ?, ?, ?, ?)";
             PreparedStatement preStatement = con.prepareStatement(query);
 
             preStatement.setInt(1, pro.getID());
             preStatement.setInt(2, pro.getOrderedBy());
-//            preStatement.setInt(3, pro.getRecipeID());
             preStatement.setInt(3, pro.getQuantity());
             preStatement.setDate(4, pro.getDate());
             preStatement.setBoolean(5, pro.isManufactured());
-
             preStatement.execute();
 
             if(!pro.getWorkers().isEmpty()) {
@@ -47,16 +51,18 @@ public class ProductDAO implements IProductDAO {
             }
             throw new DALException(e.getMessage());
         } finally {
-//            try {
-            db.toggleAutoCommit();
+            db.toggleAutoCommit(true);
             db.killConnection();
-//                con.setAutoCommit(true);
-//            } catch (SQLException e) {
-//                throw new DALException(e.getMessage());
-//            }
         }
     }
 
+    /**
+     * Helper method: Inserts the connection between product batch and recipe into the database
+     *
+     * @param pro   Instance of ProductDTO
+     * @param con   Connection to database
+     * @throws      SQLException
+     */
     private void createProductRecipeConnection(IProductDTO pro, Connection con) throws SQLException {
         String query = "INSERT INTO product_recipe VALUES(?, ?)";
         PreparedStatement preStatement = con.prepareStatement(query);
@@ -65,6 +71,13 @@ public class ProductDAO implements IProductDAO {
         preStatement.executeUpdate();
     }
 
+    /**
+     * Helper method: Inserts the connection between product batch and workers into the database
+     *
+     * @param pro   Instance of ProductDTO
+     * @param con   Connection to database
+     * @throws      SQLException
+     */
     private void createProductionLines(IProductDTO pro, Connection con) throws SQLException {
         String query = "INSERT INTO production VALUES(?, ?)";
         PreparedStatement preStatement = con.prepareStatement(query);
@@ -77,6 +90,13 @@ public class ProductDAO implements IProductDAO {
         }
     }
 
+    /**
+     * Helper method: Inserts the connections between product batch and its commodity batches into the database
+     *
+     * @param pro   Instance of ProductDTO
+     * @param con   Connection to database
+     * @throws      SQLException
+     */
     private void createCommodityLines(IProductDTO pro, Connection con) throws SQLException {
         String query = "INSERT INTO commodity_line VALUES(?, ?)";
         PreparedStatement preStatement = con.prepareStatement(query);
@@ -89,45 +109,44 @@ public class ProductDAO implements IProductDAO {
     }
 
     //Read
+
+    /**
+     * Returns a list of ProductDTO to be shown in upper layers
+     *
+     * @return  List of ProdutDTO
+     * @throws  DALException
+     */
     @Override
     public List<IProductDTO> getAllProducts() throws DALException {    //TODO Split into readProducts methods for manufactured and not-yet-manufactured instances of product?
         List<IProductDTO> products = new ArrayList<>();
 
         try(Connection con = db.createConnection()) {
-            ResultSet rsProducts = con.prepareStatement("SELECT product.* FROM product").executeQuery();
+            ResultSet rsProducts = con.prepareStatement(
+                    "SELECT product.*, product_recipe.recipe_id, recipe.recipe_name FROM product \\n\" +\n" +
+                    " \"INNER JOIN product_recipe ON product.batch_id = product_recipe.batch_id \\n\" +\n" +
+                    "\"INNER JOIN recipe ON product_recipe.recipe_id = recipe.recipe_id\\n\" +\n").executeQuery();
 
             while(rsProducts.next()) {
                 int proID = rsProducts.getInt(1);
-                List<IUserDTO> users = getProductWorkers(proID, con);
-                List<ICommodityDTO> commodities = getProductCommodities(proID, con);
-                IRecipeDAO recipeDAO = new RecipeDAO();
-
-                IProductDTO product = new ProductDTO(
-                        proID,                                                          //ID
-                        recipeDAO.getRecipeName(rsProducts.getInt(2), con), //Name of product
-                        rsProducts.getInt(2),                               //Recipe ID
-                        rsProducts.getInt(3),                               //Orderers ID
-                        rsProducts.getInt(4),                               //Quantity of product
-                        users,                                                          //Laborants working on it
-                        commodities,                                                    //Commodities used
-                        rsProducts.getDate(5),                              //Date of production
-                        rsProducts.getBoolean(6)                            //Manufactured
-                );
-                products.add(product);
+                products.add(retrieveProduct(con, rsProducts, proID));
             }
-
         } catch (SQLException e) {
             throw new DALException(e.getMessage());
         }
-
         return products;
     }
 
+    /**
+     * Returns an instance of ProductDTO to be handled in upper layers
+     *
+     * @param id    ID of product
+     * @return      Instance of ProductDTO
+     * @throws      DALException
+     */
     @Override
     public IProductDTO getProduct(int id) throws DALException {
         IProductDTO product = null;
         try (Connection con = db.createConnection()){
-//            PreparedStatement preStatement = con.prepareStatement("SELECT * FROM product WHERE batch_id = ?");
             PreparedStatement preStatement = con.prepareStatement(
                     "SELECT product.*, product_recipe.recipe_id, recipe.recipe_name FROM product \n" +
                     "INNER JOIN product_recipe ON product.batch_id = product_recipe.batch_id \n" +
@@ -138,21 +157,7 @@ public class ProductDAO implements IProductDAO {
 
             if(rsProducts.next()) {
                 int proID = rsProducts.getInt(1);
-                List<IUserDTO> users = getProductWorkers(proID, con);
-                List<ICommodityDTO> commodities = getProductCommodities(proID, con);
-                IRecipeDAO recipeDAO = new RecipeDAO();
-
-                product = new ProductDTO(
-                        proID,                                                          //ID
-                        rsProducts.getString(7),                            //Name of product
-                        rsProducts.getInt(6),                               //Recipe ID
-                        rsProducts.getInt(2),                               //Orderers ID
-                        rsProducts.getInt(3),                               //Quantity of product
-                        users,                                                          //Laborants working on it
-                        commodities,                                                    //Commodities used
-                        rsProducts.getDate(4),                              //Date of production
-                        rsProducts.getBoolean(5)                            //Manufactured //TODO Fix 3rd possibility
-                );
+                product = retrieveProduct(con, rsProducts, proID);
             }
         } catch (SQLException e) {
             throw new DALException(e.getMessage());
@@ -160,6 +165,45 @@ public class ProductDAO implements IProductDAO {
         return product;
     }
 
+    /**
+     * Helper method: Retrives the product. Can be called from a loop to collect more information from already
+     * queried ResultSet
+     *
+     * @param con           Connection to database
+     * @param rsProducts    Already queried ResultSet
+     * @param proID         ID of product
+     * @return              Instance of ProductDTO
+     * @throws              DALException
+     * @throws              SQLException
+     */
+    private IProductDTO retrieveProduct(Connection con, ResultSet rsProducts, int proID) throws DALException, SQLException {
+        IProductDTO product;
+        List<IUserDTO> users = getProductWorkers(proID, con);
+        List<ICommodityDTO> commodities = getProductCommodities(proID, con);
+        IRecipeDAO recipeDAO = new RecipeDAO();
+
+        product = new ProductDTO(
+                proID,                                                          //ID
+                rsProducts.getString(7),                            //Name of product
+                rsProducts.getInt(6),                               //Recipe ID
+                rsProducts.getInt(2),                               //Orderers ID
+                rsProducts.getInt(3),                               //Quantity of product
+                users,                                                          //Laborants working on it
+                commodities,                                                    //Commodities used
+                rsProducts.getDate(4),                              //Date of production
+                rsProducts.getBoolean(5)                            //Manufactured //TODO Fix 3rd possibility
+        );
+        return product;
+    }
+
+    /**
+     * Helper method: Retrieves a list of workers on a product from database
+     *
+     * @param productID ID of product
+     * @param con       Connection to database
+     * @return          List of UserDTO
+     * @throws          DALException
+     */
     private List<IUserDTO> getProductWorkers(int productID, Connection con) throws DALException {
         try {
             IUserDAO userDAO = new UserDAO();
@@ -179,6 +223,14 @@ public class ProductDAO implements IProductDAO {
         }
     }
 
+    /**
+     * Helper method: Retrieves list of commodity batches associated with a product
+     *
+     * @param productID ID of product
+     * @param con       Connection to database
+     * @return          List of CommodityDTO
+     * @throws          DALException
+     */
     private List<ICommodityDTO> getProductCommodities(int productID, Connection con) throws DALException {
         List<ICommodityDTO> commodities = null;
         try {
@@ -200,12 +252,20 @@ public class ProductDAO implements IProductDAO {
     }
 
     //Update
+    /**
+     * Updates the information of a product in the database from a new ProductDTO. Will rewrite information even if it
+     * is the same. Uses a list of UserDTO to delete old connections between workers and product batch
+     *
+     * @param pro       Instance of ProductDTO
+     * @param oldUsers  List of UserDTO
+     * @return          True if update succesfull, else false
+     * @throws          DALException
+     */
     @Override
     public boolean updateProductInfo(IProductDTO pro, List<IUserDTO> oldUsers) throws DALException {
-//        try(Connection con = db.createConnection()) {
         Connection con = db.createConnection();
         try {
-            db.toggleAutoCommit();
+            db.toggleAutoCommit(false);
             String query = "UPDATE product SET ordered_by = ?, quantity = ?, production_date = ?, manufactured = ? WHERE batch_id = ?"; //TODO Put "manufactured = ?," into query when db updated
             PreparedStatement preStatement = con.prepareStatement(query);
 
@@ -229,11 +289,20 @@ public class ProductDAO implements IProductDAO {
             }
             throw new DALException(e.getMessage());
         } finally {
-            db.toggleAutoCommit();
+            db.toggleAutoCommit(true);
             db.killConnection();
         }
     }
 
+    /**
+     * Helper method: Updates the connection between workers and product batch. Will only delete those workers who
+     * doesn't work on the batch any further and create connections if new workers are added
+     *
+     * @param newPro    The new ProductDTO
+     * @param oldUsers  List of previous workers
+     * @param con       Connection to database
+     * @throws          SQLException
+     */
     private void updateLaborants(IProductDTO newPro, List<IUserDTO> oldUsers, Connection con) throws SQLException {
         PreparedStatement deleteStatement = null, insertStatement = null;
         List<IUserDTO> usersToBeDeleted, usersToBeInserted;
@@ -248,8 +317,8 @@ public class ProductDAO implements IProductDAO {
             oldUsers.removeAll(newPro.getWorkers());
             usersToBeDeleted = oldUsers;
 
-            updateProductionLines(deleteStatement, newPro.getID(), usersToBeDeleted, con);
-            updateProductionLines(insertStatement, newPro.getID(), usersToBeInserted, con);
+            updateProductionLines(deleteStatement, newPro.getID(), usersToBeDeleted);
+            updateProductionLines(insertStatement, newPro.getID(), usersToBeInserted);
             con.commit();
         } catch(SQLException e) {
             if(con != null) {
@@ -266,17 +335,30 @@ public class ProductDAO implements IProductDAO {
         }
     }
 
-    private void updateProductionLines(PreparedStatement statement, int proID, List<IUserDTO> users, Connection con) throws SQLException {
+    /**
+     * Helper method: Updates the connection between product batch and worker from previous given PreparedStatement
+     *
+     * @param statement     Query which can either delete or insert
+     * @param proID         ID of product
+     * @param users         List of workers
+     * @throws              SQLException
+     */
+    private void updateProductionLines(PreparedStatement statement, int proID, List<IUserDTO> users) throws SQLException {
         for(IUserDTO user : users) {
             statement.setInt(1, user.getUserId());
             statement.setInt(2, proID);
-            statement.execute();
             statement.executeUpdate();
         }
     }
 
-        //MarkAsFinished
-    @Override //TODO Should set date to current date aswell
+    //MarkAsFinished
+    /**
+     * Marks a product as finished
+     *
+     * @param id    ID of product
+     * @throws      DALException
+     */
+    @Override //TODO Should set date to current date aswell //TODO Make able to choose one more variable for "Placed order, Working on, Done". Possibly change from boolean
     public void markAsFinished(int id) throws DALException {
         try(Connection con = db.createConnection()) {
             String query = "UPDATE product SET production_date = ?, manufactured = ? WHERE batch_id = ?";
@@ -292,6 +374,12 @@ public class ProductDAO implements IProductDAO {
     }
 
     //Delete
+    /**
+     * Deletes a product from the database
+     *
+     * @param id    ID of product
+     * @throws      DALException
+     */
     @Override
     public void deleteProduct(int id) throws DALException {
         try(Connection con = db.createConnection()) {
@@ -302,5 +390,4 @@ public class ProductDAO implements IProductDAO {
         } catch(SQLException e) {
             throw new DALException(e.getMessage());
         }
-    }
-}
+    }}

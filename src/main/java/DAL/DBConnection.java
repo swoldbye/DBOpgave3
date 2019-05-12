@@ -11,16 +11,26 @@ public class DBConnection {
     private String password = "UXZTadQzbPrlIosGCZYNF";
     private Connection con;
 
+    /**
+     * Establishes connection to database
+     *
+     * @return  Connection
+     * @throws  SQLException
+     */
     public Connection establishConnection() throws SQLException {
         return con = DriverManager.getConnection(url, username, password);
     }
 
+    /**
+     * Singleton to create connection to database if none already exists
+     *
+     * @return  Connection to database
+     * @throws  DALException
+     */
     public Connection createConnection()throws DALException {
         try {
             if(con == null || con.isClosed()) {
                 return establishConnection();
-//            } else if() {
-//                return establishConnection();
             } else {
                 return con;
             }
@@ -29,6 +39,11 @@ public class DBConnection {
         }
     }
 
+    /**
+     * Kills the connection
+     *
+     * @throws DALException
+     */
     public void killConnection() throws DALException {
         try {
             con.close();
@@ -37,9 +52,15 @@ public class DBConnection {
         }
     }
 
-    public void toggleAutoCommit() throws DALException {
+    /**
+     * For throwing DALException for Connection.setAutoCommit(boolean) method. Avoids akward try-catch nesting
+     *
+     * @param setting   True if auto commit on, else false
+     * @throws          DALException
+     */
+    public void toggleAutoCommit(boolean setting) throws DALException {
         try {
-            con.setAutoCommit(!con.getAutoCommit());
+            con.setAutoCommit(setting);
         } catch (SQLException e) {
             throw new DALException(e.getMessage());
         }
