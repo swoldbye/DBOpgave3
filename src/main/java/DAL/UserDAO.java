@@ -48,7 +48,7 @@ public class UserDAO implements IUserDAO {
             }
 
         } catch (SQLException e) {
-            throw new IUserDAO.DALException(e.getMessage());
+            throw new DALException(e.getMessage());
         }
 
     }
@@ -61,7 +61,6 @@ public class UserDAO implements IUserDAO {
      * @throws DALException
      */
     public IUserDTO getUser(int userId) throws DALException {
-
         try (Connection conn = createConnection()) {
 
 
@@ -90,7 +89,7 @@ public class UserDAO implements IUserDAO {
             return returnUser;
 
         } catch (SQLException e) {
-            throw new IUserDAO.DALException(e.getMessage());
+            throw new DALException(e.getMessage());
         }
 
     }
@@ -118,9 +117,8 @@ public class UserDAO implements IUserDAO {
             return users;
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DALException(e.getMessage());
         }
-        return null;
     }
 
     /**
@@ -190,7 +188,7 @@ public class UserDAO implements IUserDAO {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DALException(e.getMessage());
         }
     }
 
@@ -217,7 +215,7 @@ public class UserDAO implements IUserDAO {
 
         } catch (SQLException e) {
             //Remember to handle Exceptions gracefully! Connection might be Lost....
-            e.printStackTrace();
+            throw new DALException(e.getMessage());
         }
     }
 
@@ -252,7 +250,7 @@ public class UserDAO implements IUserDAO {
             preparedStatement.execute();
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DALException(e.getMessage());
         }
     }
 
@@ -278,7 +276,7 @@ public class UserDAO implements IUserDAO {
 
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DALException(e.getMessage());
         }
     }
 
@@ -304,9 +302,8 @@ public class UserDAO implements IUserDAO {
 
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DALException(e.getMessage());
         }
-        return null;
     }
 
     /**
@@ -325,7 +322,7 @@ public class UserDAO implements IUserDAO {
             preparedStatement.execute();
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DALException(e.getMessage());
         }
     }
 
