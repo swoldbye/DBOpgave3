@@ -21,12 +21,16 @@ public class IngridientDAOTest {
         IIngridientDTO created = new IngridientDTO(99, "Bananer", false);
         IIngridientDAO dal = new IngridientDAO();
 
-        dal.createIngridient(created);
+        try {
+            dal.createIngridient(created);
 
-        IIngridientDTO dataBaseIngredient = dal.getIngredient(99);
+            IIngridientDTO dataBaseIngredient = dal.getIngredient(99);
 
-        assertEquals(created.toString(),dataBaseIngredient.toString());
-        dal.deleteIngridient(99);
+            assertEquals(created.toString(),dataBaseIngredient.toString());
+        } finally {
+            dal.deleteIngridient(99);
+
+        }
     }
 
     @org.junit.Test
@@ -36,17 +40,22 @@ public class IngridientDAOTest {
     public void updateIngridient() throws DALException {
 
 
+        IIngridientDAO dal;
         IIngridientDTO ingridien = new IngridientDTO(100, "dsadsadasdsfdsfsdf", true);
         IIngridientDTO ingridien2 = new IngridientDTO(100, "dsadsadasdsfdsfsdf", false);
-        IIngridientDAO dal = new IngridientDAO();
+        dal = new IngridientDAO();
+        try {
 
-        dal.createIngridient(ingridien);
-        dal.updateIngridient(ingridien2);
-        IIngridientDTO objectFromDatabase = dal.getIngredient(100);
+            dal.createIngridient(ingridien);
+            dal.updateIngridient(ingridien2);
+            IIngridientDTO objectFromDatabase = dal.getIngredient(100);
 
-        assertEquals(ingridien2.toString(),objectFromDatabase.toString());
+            assertEquals(ingridien2.toString(),objectFromDatabase.toString());
+        } finally {
+            dal.deleteIngridient(100);
 
-        dal.deleteIngridient(100);
+        }
+
 
 
     }
@@ -62,17 +71,21 @@ public class IngridientDAOTest {
         IIngridientDTO ingridien = new IngridientDTO(100, "dsadsadasdsfdsfsdf", true);
         IIngridientDAO dal = new IngridientDAO();
 
-        dal.createIngridient(ingridien);
-        dal.deleteIngridient(100);
-        ArrayList<IIngridientDTO> ingrediensList = dal.getIngredientList();
+        try {
+            dal.createIngridient(ingridien);
+            dal.deleteIngridient(100);
+            ArrayList<IIngridientDTO> ingrediensList = dal.getIngredientList();
 
 
-        for(int i = 0; i < ingrediensList.size(); i++ ){
-            if(ingrediensList.get(i).getIngredient_id()==ingridien.getIngredient_id()){
+            for(int i = 0; i < ingrediensList.size(); i++ ){
+                if(ingrediensList.get(i).getIngredient_id()==ingridien.getIngredient_id()){
 
-                fail();
+                    fail();
+                }
+
             }
-
+        } finally {
+            dal.deleteIngridient(100);
         }
     }
 
@@ -86,12 +99,16 @@ public class IngridientDAOTest {
         IIngridientDTO ingridien = new IngridientDTO(100, "dsadsadasdsfdsfsdf", true);
         IIngridientDAO dal = new IngridientDAO();
 
-        dal.createIngridient(ingridien);
-        IIngridientDTO ingridienFromDatabase = dal.getIngredient(100);
+        try {
+            dal.createIngridient(ingridien);
+            IIngridientDTO ingridienFromDatabase = dal.getIngredient(100);
 
-        assertEquals(ingridien.toString(),ingridienFromDatabase.toString());
+            assertEquals(ingridien.toString(),ingridienFromDatabase.toString());
+        } finally {
+            dal.deleteIngridient(100);
 
-        dal.deleteIngridient(100);
+        }
+
 
     }
 
@@ -106,30 +123,32 @@ public class IngridientDAOTest {
 
 
         IIngridientDAO dal = new IngridientDAO();
-        ArrayList<IIngridientDTO> ingrediensList = dal.getIngredientList();
+        try {
+            ArrayList<IIngridientDTO> ingrediensList = dal.getIngredientList();
 
 
-        int expectedNumberOfRows = 16;
-        int actualNumberOfRows = ingrediensList.size();
+            int expectedNumberOfRows = 16;
+            int actualNumberOfRows = ingrediensList.size();
 
-        assertEquals(expectedNumberOfRows,actualNumberOfRows);
+            assertEquals(expectedNumberOfRows,actualNumberOfRows);
 
-        IIngridientDTO ingredient = new IngridientDTO(101, "dsadsadasdsfdsfsdf", true);
-        dal.createIngridient(ingredient);
+            IIngridientDTO ingredient = new IngridientDTO(101, "dsadsadasdsfdsfsdf", true);
+            dal.createIngridient(ingredient);
 
-        ingrediensList = dal.getIngredientList();
+            ingrediensList = dal.getIngredientList();
 
-        expectedNumberOfRows = 17;
-        actualNumberOfRows = ingrediensList.size();
-
-
-
-        assertEquals(expectedNumberOfRows,actualNumberOfRows);
+            expectedNumberOfRows = 17;
+            actualNumberOfRows = ingrediensList.size();
 
 
+            assertEquals(expectedNumberOfRows,actualNumberOfRows);
+        } finally {
+            dal.deleteIngridient(100);
+            dal.deleteIngridient(101);
 
-        dal.deleteIngridient(100);
-        dal.deleteIngridient(101);
+        }
+
+
 
 
     }
