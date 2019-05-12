@@ -1,3 +1,4 @@
+package DAL;
 
 import static org.junit.Assert.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -20,51 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RecipeDAOTest{
-
-    /**INDLEDENDE NOTE:
-     *
-     * IMELLEM HVER TEST KAN DER MED FORDEL AVENDES NEDERFORSTÅENDE QUERY DER NULSTILLER ALLE TABELLER.
-     * DETTE ER NØDVENDIGT DA DER ANVENDES SHADOWTABLES, DER GEMMER SLETTET DATA.
-     *
-     * DELETE FROM shadowRecipe WHERE recipe_id =100;
-     * DELETE FROM shadowIngredient_line WHERE recipe_id =100;
-     * DELETE FROM recipe WHERE recipe_id =100;
-     * DELETE FROM ingredient_line WHERE recipe_id =100;
-     * DELETE FROM shadowIngredient_line WHERE recipe_id =100;
-     * DELETE FROM shadowRecipe WHERE recipe_id =100;
-     *
-     * DELETE FROM shadowRecipe WHERE recipe_id =200;
-     * DELETE FROM shadowIngredient_line WHERE recipe_id =200;
-     * DELETE FROM recipe WHERE recipe_id =200;
-     * DELETE FROM ingredient_line WHERE recipe_id =200;
-     * DELETE FROM shadowIngredient_line WHERE recipe_id =200;
-     * DELETE FROM shadowRecipe WHERE recipe_id =200;
-     *
-     * DELETE FROM shadowRecipe WHERE recipe_id =201;
-     * DELETE FROM shadowIngredient_line WHERE recipe_id =201;
-     * DELETE FROM recipe WHERE recipe_id =201;
-     * DELETE FROM ingredient_line WHERE recipe_id =201;
-     * DELETE FROM shadowIngredient_line WHERE recipe_id =201;
-     * DELETE FROM shadowRecipe WHERE recipe_id =201;
-     *
-     * DELETE FROM shadowRecipe WHERE recipe_id =300;
-     * DELETE FROM shadowIngredient_line WHERE recipe_id =300;
-     * DELETE FROM recipe WHERE recipe_id =300;
-     * DELETE FROM ingredient_line WHERE recipe_id =300;
-     * DELETE FROM shadowIngredient_line WHERE recipe_id =300;
-     * DELETE FROM shadowRecipe WHERE recipe_id =300;
-     *
-     * DELETE FROM shadowRecipe WHERE recipe_id =301;
-     * DELETE FROM shadowIngredient_line WHERE recipe_id =301;
-     * DELETE FROM recipe WHERE recipe_id =301;
-     * DELETE FROM ingredient_line WHERE recipe_id =301;
-     * DELETE FROM shadowIngredient_line WHERE recipe_id =301;
-     * DELETE FROM shadowRecipe WHERE recipe_id =301;
-     *
-     *
-     * Dette skyldet at opskrifter bliver gemt i shadowTabeller, hvor de selvfølgelig ikke skal slettes fra.
-     */
-
 
     IRecipeDAO iRecipeDAO = new RecipeDAO();
 

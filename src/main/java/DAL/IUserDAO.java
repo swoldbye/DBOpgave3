@@ -16,13 +16,13 @@ public interface IUserDAO {
     void deleteUser(int userId) throws DALException;
 
     //Create
-    void createRoll(String roll, int id) throws DALException;
+    void createRole(String roll, int id) throws DALException;
     //Delete
-    void deleteRoll(String roll) throws DALException;
+    void deleteRole(String roll) throws DALException;
     //Read
-    List<String> getRollList() throws DALException;
+    List<String> getRoleList() throws DALException;
     //Update
-    void updateRoll(String oldRole, String newRole) throws DALException;
+    void updateRole(String oldRole, String newRole) throws DALException;
 
 
     //helper function   //FixMe Should this be in the interface if only a helper function?

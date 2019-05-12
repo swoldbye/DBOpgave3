@@ -1,3 +1,4 @@
+package DAL;
 
 import static org.junit.Assert.*;
 import DAL.CommodityDAO;

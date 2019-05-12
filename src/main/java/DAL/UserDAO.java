@@ -140,7 +140,7 @@ public class UserDAO implements IUserDAO {
             preparedStatement.setInt(4, user.getUserId());
             preparedStatement.execute();
 
-            //query2 will find all the rolls associated with the user_id.
+            //query2 will find all the roles associated with the user_id.
             //Thereafter the UserDTO's String-Array will be compared to the returned resultSet.
             String query2 = "SELECT role_name, role_id FROM roles WHERE " +
                     "role_id IN (SELECT role_id FROM user_role WHERE user_id = ?)";
@@ -164,7 +164,7 @@ public class UserDAO implements IUserDAO {
                         copy.set(i, "-1");
                     }
                 }
-                //if contains returns false, it means that there is a roll in the database which does
+                //if contains returns false, it means that there is a role in the database which does
                 //not exist in the arrayList... and therefore needs to be removed.
                 if (contains == false) {
                     String query3 = "DELETE FROM user_role WHERE user_id = ? AND role_id = ?";
@@ -236,17 +236,17 @@ public class UserDAO implements IUserDAO {
 
     /**
      * creates a role for 'roles' table using given name and id.
-     * @param roll
+     * @param role
      * @param id
      * @throws DALException
      */
-    public void createRoll(String roll, int id) throws DALException {
+    public void createRole(String role, int id) throws DALException {
         try (Connection c = createConnection()) {
 
             String query = "INSERT INTO roles VALUES(?,?)";
             PreparedStatement preparedStatement = c.prepareStatement(query);
             preparedStatement.setInt(1, id);
-            preparedStatement.setString(2, roll);
+            preparedStatement.setString(2, role);
             preparedStatement.execute();
 
         } catch (SQLException e) {
@@ -256,21 +256,21 @@ public class UserDAO implements IUserDAO {
 
     /**
      * removes role from everywhere necessary in database: 'user_role' and 'roles'.
-      * @param roll
+      * @param role
      * @throws DALException
      */
-    public void deleteRoll(String roll) throws DALException {
+    public void deleteRole(String role) throws DALException {
 
         try (Connection c = createConnection()) {
 
             String query2 = "DELETE FROM user_role WHERE role_id IN (SELECT role_id FROM roles WHERE role_name = ?)";
             PreparedStatement preparedStatement1 = c.prepareStatement(query2);
-            preparedStatement1.setString(1, roll);
+            preparedStatement1.setString(1, role);
             preparedStatement1.execute();
 
             String query = "DELETE FROM roles WHERE role_name = ?";
             PreparedStatement preparedStatement = c.prepareStatement(query);
-            preparedStatement.setString(1, roll);
+            preparedStatement.setString(1, role);
             preparedStatement.execute();
 
 
@@ -285,7 +285,7 @@ public class UserDAO implements IUserDAO {
      * @return
      * @throws DALException
      */
-    public List<String> getRollList() throws DALException {
+    public List<String> getRoleList() throws DALException {
         try (Connection c = createConnection()) {
 
             String query = "SELECT role_name FROM roles";
@@ -313,7 +313,7 @@ public class UserDAO implements IUserDAO {
      * @param newRole
      * @throws DALException
      */
-    public void updateRoll(String oldRole, String newRole) throws DALException {
+    public void updateRole(String oldRole, String newRole) throws DALException {
         try (Connection c = createConnection()) {
             String query = "UPDATE roles SET role_name = ? WHERE role_name = ?";
             PreparedStatement preparedStatement = c.prepareStatement(query);

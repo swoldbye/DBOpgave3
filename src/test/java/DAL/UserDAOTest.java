@@ -1,11 +1,10 @@
+package DAL;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.*;
 
-import DAL.DALException;
-import DAL.IUserDAO;
-import DAL.UserDAO;
 import DTO.IUserDTO;
 import DTO.UserDTO;
 
@@ -14,19 +13,19 @@ public class UserDAOTest {
     IUserDAO userDAO = new UserDAO();
 
     @org.junit.Test
-    public void test() {
+    public void test() throws DALException {
         try {
 
             ArrayList<String> roles = new ArrayList();
             roles.add("admin"); roles.add("user"); roles.add("worker");
             IUserDTO testUser = new UserDTO(52,"swoldbye", "swl", roles, "300698-1234");
 
-            //create the rolls
-            userDAO.createRoll("admin", 95);
-            userDAO.createRoll("user", 96);
-            userDAO.createRoll("worker", 97);
-            userDAO.createRoll("full-Time", 99);
-            userDAO.createRoll("part-Time", 98);
+            //create the roles
+            userDAO.createRole("admin", 95);
+            userDAO.createRole("user", 96);
+            userDAO.createRole("worker", 97);
+            userDAO.createRole("full-Time", 99);
+            userDAO.createRole("part-Time", 98);
 
             //createUser and getUser
             userDAO.createUser(testUser);
@@ -63,7 +62,7 @@ public class UserDAOTest {
             roles.add("Admin"); //'admin' changed to 'Admin' to test updateRole.
             roles.add("full-Time");
             roles.add("part-Time");
-            userDAO.updateRoll("admin", "Admin");
+            userDAO.updateRole("admin", "Admin");
 
             testUser.setUserName("abcd");
             testUser.setIni("qwer");
@@ -90,29 +89,36 @@ public class UserDAOTest {
             }
 
             int i = 0;
-            List<String> allRoles = userDAO.getRollList();
-            for(String roll: allRoles){
-                if(roll.equals("Admin") || roll.equals("user") || roll.equals("worker")
-                        || roll.equals("part-Time") || roll.equals("full-Time")){i++;}
+            List<String> allRoles = userDAO.getRoleList();
+            for(String role: allRoles){
+                if(role.equals("Admin") || role.equals("user") || role.equals("worker")
+                        || role.equals("part-Time") || role.equals("full-Time")){i++;}
             }
             if(i != 5) {fail();}
 
-            userDAO.deleteRoll("admin");
-            userDAO.deleteRoll("user");
-            userDAO.deleteRoll("worker");
-            userDAO.deleteRoll("part-Time");
-            userDAO.deleteRoll("full-Time");
+            userDAO.deleteRole("admin");
+            userDAO.deleteRole("user");
+            userDAO.deleteRole("worker");
+            userDAO.deleteRole("part-Time");
+            userDAO.deleteRole("full-Time");
 
-            List<String> newRoles = userDAO.getRollList();
-            for(String roll: newRoles){
-                if(roll.equals("Admin") || roll.equals("user") || roll.equals("worker")
-                        || roll.equals("part-Time") || roll.equals("full-Time")){fail();}
+            List<String> newRoles = userDAO.getRoleList();
+            for(String role: newRoles){
+                if(role.equals("Admin") || role.equals("user") || role.equals("worker")
+                        || role.equals("part-Time") || role.equals("full-Time")){fail();}
             }
             userDAO.deleteUser(52);
 
         } catch (DALException e) {
             e.printStackTrace();
             fail();
+        } finally { //Cleanup
+            userDAO.deleteUser(52);
+            userDAO.deleteRole("admin");
+            userDAO.deleteRole("user");
+            userDAO.deleteRole("worker");
+            userDAO.deleteRole("part-Time");
+            userDAO.deleteRole("full-Time");
         }
 
 
