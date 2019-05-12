@@ -274,7 +274,7 @@ public class ProductDAO implements IProductDAO {
             preStatement.setDate(3, pro.getDate());
             preStatement.setBoolean(4, pro.isManufactured());
             preStatement.setInt(5, pro.getID());
-            preStatement.execute();
+            preStatement.executeUpdate();
             //Update workers
             updateLaborants(pro, oldUsers, con);
             con.commit();
@@ -308,7 +308,7 @@ public class ProductDAO implements IProductDAO {
         List<IUserDTO> usersToBeDeleted, usersToBeInserted;
         try{
             con.setAutoCommit(false);
-            deleteStatement = con.prepareStatement("DELETE * FROM production WHERE laborant_id = ? AND product_id = ?");
+            deleteStatement = con.prepareStatement("DELETE FROM production WHERE laborant_id = ? AND product_id = ?");
             insertStatement = con.prepareStatement("INSERT INTO production VALUES(?,?)");
 
             List<IUserDTO> newUsersTemp = newPro.getWorkers();
