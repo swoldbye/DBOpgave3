@@ -1,3 +1,5 @@
+package DAL;
+
 import DAL.DALException;
 import DAL.IIngridientDAO;
 import DAL.IngridientDAO;
