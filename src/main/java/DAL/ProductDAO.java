@@ -123,9 +123,9 @@ public class ProductDAO implements IProductDAO {
 
         try(Connection con = db.createConnection()) {
             ResultSet rsProducts = con.prepareStatement(
-                    "SELECT product.*, product_recipe.recipe_id, recipe.recipe_name FROM product \\n\" +\n" +
-                    " \"INNER JOIN product_recipe ON product.batch_id = product_recipe.batch_id \\n\" +\n" +
-                    "\"INNER JOIN recipe ON product_recipe.recipe_id = recipe.recipe_id\\n\" +\n").executeQuery();
+                    "SELECT product.*, product_recipe.recipe_id, recipe.recipe_name FROM product " +
+                    "INNER JOIN product_recipe ON product.batch_id = product_recipe.batch_id " +
+                    "INNER JOIN recipe ON product_recipe.recipe_id = recipe.recipe_id").executeQuery();
 
             while(rsProducts.next()) {
                 int proID = rsProducts.getInt(1);
