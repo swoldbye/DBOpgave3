@@ -34,6 +34,7 @@ public class ProductDAO implements IProductDAO {
             preStatement.setBoolean(5, pro.isManufactured());
             preStatement.execute();
 
+            //Hvis der er workers på produktet
             if(!pro.getWorkers().isEmpty()) {
                 createProductionLines(pro, con);
             }
